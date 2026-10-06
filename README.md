@@ -2,38 +2,52 @@
 
 [![video](assets/thumbnail.png)](https://www.youtube.com/watch?v=kzcI5F4tGiU)
 
-My AI learning system from this video: [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU).
+A personal learning system built around two teaching principles: start from truths the learner accepts, and make each new idea feel discoverable. The source video is [here](https://www.youtube.com/watch?v=kzcI5F4tGiU).
 
-This is a personal system I built for myself, shared as-is. Built as a pi configuration: the teaching philosophy encoded in a skill, a few small extensions, and agent definitions.
+## What's included
 
-## What's in it
+- `.agents/skills/teach/` — the teaching method and session flow
+- `.agents/skills/visualize/` — guidance for creating a useful diagram or geometric picture
+- `.agents/skills/visualize/scripts/render-diagram.mjs` — optional Mermaid and SVG to PNG renderer
+- `.codex/agents/researcher.toml` — an optional read-only research specialist
 
-- `skills/teach/` — the philosophy and the process
-- `skills/visualize/` — adds a correct, minimal diagram to a lesson when an idea is clearer as a picture
-- `extensions/ask-user-question/` — the agent asks you questions through a UI popup
-- `extensions/quiz/` — graded questions with instant feedback (✓/✗, correct answer, explanation)
-- `extensions/md-log/` — link a markdown file to the session
-- `extensions/visual-tools/` — tools for visualization subagents
-- `agents/` — `researcher`, `svg-maker`, `mermaid-maker`: the subagents the system delegates to
+## Use
 
-## Install
+Open this repository as the working project to use the skills here. To use them in another project, copy or symlink the skill directories into that project's `.agents/skills/` directory:
 
-This repo **is** a `.pi` directory. From your learning project's root:
-
-```bash
-git clone https://github.com/amosblomqvist/learn .pi
+```sh
+git clone https://github.com/amosblomqvist/learn /path/to/learn
+mkdir -p /path/to/learning-project/.agents/skills
+ln -s /path/to/learn/.agents/skills/teach /path/to/learning-project/.agents/skills/teach
+ln -s /path/to/learn/.agents/skills/visualize /path/to/learning-project/.agents/skills/visualize
 ```
 
-Then open pi in that directory. (Or copy the pieces you want into your existing project config.)
+Select or mention `teach` when starting a lesson. Use `visualize` when a picture will make an idea clearer.
 
-## Requirements
+You can also install them for personal use by linking them into `~/.agents/skills/`:
 
-- [pi](https://github.com/earendil-works/pi)
-- A subagent implementation, so the system can spawn the researcher and the visual makers. Recommended: [pi-interactive-subagents](https://github.com/amosblomqvist/pi-interactive-subagents) (tmux only). With it, everything works out of the box. Any other implementation works too, but expect to adapt the agent definitions, e.g. `agents/researcher.md` lists `safe_bash` in its tools, which is specific to that extension.
-- `ask-user-question` — use the copy bundled here. If your setup already has an `ask-user-question` extension, use **this** one in its place. Popups from different extensions serialize through a shared UI lock, which only works when it's the same implementation.
+```sh
+mkdir -p ~/.agents/skills
+ln -s /path/to/learn/.agents/skills/teach ~/.agents/skills/teach
+ln -s /path/to/learn/.agents/skills/visualize ~/.agents/skills/visualize
+```
 
-## Notes
+The core teaching workflow needs no `pi`, packages, or extensions. Ask questions and grade answers in the conversation. Lesson notes are written only when requested; give a destination path or choose one when asked.
 
-You can run the system without subagents. The main session does the teaching. You just lose the researcher (truth verification) and the generated visuals.
+## Optional diagram rendering
 
-The teaching skill is written for one learner (me). Edit the skill to fit how you learn best.
+Mermaid rendering requires Node.js 22.13 or later and the `mmdc` command. Install Mermaid CLI with `npm install --global @mermaid-js/mermaid-cli`. SVG rendering uses `rsvg-convert` when available, with ImageMagick's `magick` as a fallback. You can still use Mermaid source directly when these tools are unavailable.
+
+From a learning project, render a source diagram with:
+
+```sh
+node /path/to/learn/.agents/skills/visualize/scripts/render-diagram.mjs diagram.mmd --slug short-topic
+```
+
+The renderer saves the PNG in `./viz/` by default. Set `--output-dir` to choose another directory.
+
+Run the renderer checks with `node --test .agents/skills/visualize/scripts/render-diagram.test.mjs`.
+
+## Background
+
+This system is personal and written for one learner. Edit the teaching skill to fit how you learn best.
