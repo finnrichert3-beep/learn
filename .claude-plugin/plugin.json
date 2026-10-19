@@ -1,0 +1,8 @@
+{
+  "name": "learn",
+  "version": "0.2.0",
+  "description": "A teaching system for Claude Code: probe -> plan -> teach, graded quizzes, verified diagrams, an Obsidian session log, and multi-session curricula for big topics.",
+  "author": { "name": "kalanjiyaVishnu" },
+  "homepage": "https://github.com/amosblomqvist/learn",
+  "keywords": ["learning", "teaching", "obsidian", "quiz", "curriculum"]
+}

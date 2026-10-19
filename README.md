@@ -1,39 +1,90 @@
-# learn
+# learn — for Claude Code
 
 [![video](assets/thumbnail.png)](https://www.youtube.com/watch?v=kzcI5F4tGiU)
 
-My AI learning system from this video: [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU).
+A teaching system based on [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU) ([original pi version](https://github.com/amosblomqvist/learn)), packaged as a **Claude Code plugin**.
 
-This is a personal system I built for myself, shared as-is. Built as a pi configuration: the teaching philosophy encoded in a skill, a few small extensions, and agent definitions.
+The core idea is **understanding over memorizing**. Claude builds a dependency graph in your head: unconditional truths first, then each new fact derived from them ("how could I have discovered this?"), and every node quiz-checked before anything is built on it.
 
 ## What's in it
 
-- `skills/teach/` — the philosophy and the process
-- `skills/visualize/` — adds a correct, minimal diagram to a lesson when an idea is clearer as a picture
-- `extensions/ask-user-question/` — the agent asks you questions through a UI popup
-- `extensions/quiz/` — graded questions with instant feedback (✓/✗, correct answer, explanation)
-- `extensions/md-log/` — link a markdown file to the session
-- `extensions/visual-tools/` — tools for visualization subagents
-- `agents/` — `researcher`, `svg-maker`, `mermaid-maker`: the subagents the system delegates to
+| Piece | What it does |
+|---|---|
+| `skills/teach` | The philosophy and the probe → plan → teach process. Triggers on any explanation. |
+| `skills/curriculum` | **New.** Multi-session plans for big topics: a module DAG, a learner model, and spaced review, kept on disk in `topics/<slug>/`. |
+| `skills/visualize` | Adds one correct, minimal diagram when a picture carries the idea. |
+| `agents/researcher` | Checks facts on the web before they get taught, and scopes a field for planning. |
+| `agents/mermaid-maker`, `agents/svg-maker` | Write a diagram, render it to PNG, look at it, fix it, and publish it to `viz/`. |
+| `hooks/` + `scripts/md-log.mjs` | Mirrors the session into a markdown file so you can read it rendered in Obsidian (LaTeX, mermaid, image embeds). |
+| `commands/` | `/learn:plan`, `/learn:session`, `/learn:review`, `/learn:md-log`, `/learn:md-unlog` |
 
 ## Install
 
-This repo **is** a `.pi` directory. From your learning project's root:
+Use a separate folder for learning (ideally an Obsidian vault), and run Claude Code from there.
 
 ```bash
-git clone https://github.com/amosblomqvist/learn .pi
+claude plugin marketplace add kalanjiyaVishnu/learn
 ```
 
-Then open pi in that directory. (Or copy the pieces you want into your existing project config.)
+```bash
+claude plugin install learn@learn
+```
 
-## Requirements
+To work on the plugin itself from a local checkout:
 
-- [pi](https://github.com/earendil-works/pi)
-- A subagent implementation, so the system can spawn the researcher and the visual makers. Recommended: [pi-interactive-subagents](https://github.com/amosblomqvist/pi-interactive-subagents) (tmux only). With it, everything works out of the box. Any other implementation works too, but expect to adapt the agent definitions, e.g. `agents/researcher.md` lists `safe_bash` in its tools, which is specific to that extension.
-- `ask-user-question` — use the copy bundled here. If your setup already has an `ask-user-question` extension, use **this** one in its place. Popups from different extensions serialize through a shared UI lock, which only works when it's the same implementation.
+```bash
+claude --plugin-dir /path/to/this/repo
+```
 
-## Notes
+Add `.claude/md-log.json` to your learning folder's `.gitignore`. It holds the current log link.
 
-You can run the system without subagents. The main session does the teaching. You just lose the researcher (truth verification) and the generated visuals.
+### Requirements
 
-The teaching skill is written for one learner (me). Edit the skill to fit how you learn best.
+- Claude Code, and Node 18+ (already there if you installed Claude Code with npm).
+- **Diagrams:** Google Chrome or Chromium. Mermaid renders through `npx @mermaid-js/mermaid-cli`; the first render takes a minute or two while it downloads, then it's cached. SVG renders with headless Chrome, falling back to `rsvg-convert` or ImageMagick.
+- **Obsidian** (optional, recommended) to read the session log rendered.
+
+## What changed from the pi version
+
+| pi | Claude Code |
+|---|---|
+| `quiz` extension (graded TUI popup) | Built-in `AskUserQuestion` plus a **quiz protocol** in `teach`: Claude holds the answer key, shuffles where the correct option goes, always offers "I don't know", and grades right after you answer. |
+| `ask-user-question` extension | Built-in `AskUserQuestion` |
+| `md-log` extension | `UserPromptSubmit` / `PreToolUse` / `PostToolUse` / `Stop` hooks that sync from the session transcript. No dependencies. |
+| `visual-tools` extension + `pi-interactive-subagents` | Native subagents with `Bash`/`Read`/`Write`/`Edit` and one render script (`viz.mjs`). They "look" by reading the PNG. |
+| `.pi/agents/*.md` (`web_search`, `safe_bash`, openrouter models) | `agents/*.md` with `WebSearch`/`WebFetch`, `model: sonnet` |
+| One-session lessons only | Adds `curriculum`: persistent roadmap, learner model, spaced review |
+
+## Using it
+
+### A quick explanation
+
+Ask anything ("explain how TLS works"). `teach` takes over: it quizzes to find where your knowledge runs out, asks what you actually want, shows a plan with a dependency map, waits for your OK, then teaches node by node.
+
+### A big topic (many sessions)
+
+```
+/learn:plan operating systems
+```
+
+Claude pins down a testable goal, sends researchers to map the field, runs a quick quiz across the main strands, and proposes a **module DAG**. Once you approve, it writes `topics/operating-systems/roadmap.md` and `learner.md`.
+
+```
+/learn:session operating-systems
+```
+
+Each session starts with any reviews that are due, then picks the next module whose prerequisites are solid. It opens an Obsidian log at `topics/<slug>/sessions/<date>-<module>.md`, teaches the module with `teach`, and finishes by updating the roadmap status and the learner model.
+
+```
+/learn:review operating-systems
+```
+
+Spaced retrieval of finished modules. If you pass, the next review is pushed further out. If you miss, the module is marked `shaky` and gets re-taught before anything that depends on it.
+
+### Reading in Obsidian
+
+`/learn:md-log notes/today.md` links a file (the session so far is backfilled at the end of the turn). `/learn:session` links one for you. Open the folder as a vault and keep the file open beside the terminal.
+
+## Customize
+
+The teaching skill was written for one learner. Edit `skills/teach/SKILL.md` to fit how you learn: the Socratic/expository default, how long the probe runs, quiz style.

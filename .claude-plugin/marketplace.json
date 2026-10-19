@@ -1,0 +1,16 @@
+{
+  "name": "learn",
+  "owner": {
+    "name": "kalanjiyaVishnu"
+  },
+  "metadata": {
+    "description": "Teaching system for Claude Code: probe -> plan -> teach, quizzes, verified diagrams, Obsidian log, curricula."
+  },
+  "plugins": [
+    {
+      "name": "learn",
+      "source": "./",
+      "description": "Teaching system: probe -> plan -> teach, quizzes, verified diagrams, Obsidian log, curricula."
+    }
+  ]
+}
