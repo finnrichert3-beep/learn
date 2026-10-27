@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Bash(python3 .claude/scripts/render.py:*)",
+      "Bash(python .claude/scripts/render.py:*)",
+      "Bash(python3 .claude/hooks/md_log.py:*)",
+      "Bash(python .claude/hooks/md_log.py:*)",
+      "Write(.viz-work/**)",
+      "Edit(.viz-work/**)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f \"$CLAUDE_PROJECT_DIR/.claude/md-log-state.json\" ] && (python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/md_log.py\" hook || python \"$CLAUDE_PROJECT_DIR/.claude/hooks/md_log.py\" hook) 2>/dev/null; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f \"$CLAUDE_PROJECT_DIR/.claude/md-log-state.json\" ] && (python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/md_log.py\" hook || python \"$CLAUDE_PROJECT_DIR/.claude/hooks/md_log.py\" hook) 2>/dev/null; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

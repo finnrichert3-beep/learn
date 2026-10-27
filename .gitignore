@@ -16,3 +16,12 @@ __pycache__/
 # Runtime state
 .memory/
 *.log
+
+# Learning system runtime state
+.viz-work/
+.claude/md-log-state.json
+.claude/md-log-state.tmp
+.claude/settings.local.json
+
+# Obsidian workspace (keep your vault settings local)
+.obsidian/workspace*.json
