@@ -84,7 +84,16 @@ Both run through Claude Code's built-in **`AskUserQuestion`** tool (a popup with
    - `✓ Correct` / `✗ Not quite` / `· I don't know — no problem`
    - **Answer:** the correct option
    - **Why:** the explanation — and if they were wrong, what their specific pick reveals about their model.
-8. Ask **one question per call** when the next question depends on this answer (almost always in probing and teaching). You may batch up to 4 *independent* questions in one call only when probing separate strands at once; grade each.
+8. **Make the question readable — the popup can't render math.** Before calling the tool, show each question's math in your chat message, laid out cleanly: a short bold label matching the `header` (e.g. **Probe 1**), a one-line prompt, and the expression as a stacked fraction in a ```text block, e.g.
+
+   ```text
+             3n² + 5
+     aₙ  =  ─────────        find  lim aₙ  as n → ∞
+             n² + 7n
+   ```
+
+   Then keep the popup itself short and plain: `question` = e.g. "Probe 1 — limit of aₙ? (see above)", options in Unicode math (`ln 2`, `√3`, `π/4`, `∞`, `DNE`), never LaTeX or `$`.
+9. Ask **one question per call** when the next question depends on this answer (almost always in probing and teaching). You may batch up to 4 *independent* questions in one call only when probing separate strands at once; grade each.
 
 #### Writing quiz options — a construction procedure (applies to every quiz)
 
