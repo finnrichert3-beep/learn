@@ -84,15 +84,11 @@ Both run through Claude Code's built-in **`AskUserQuestion`** tool (a popup with
    - `✓ Correct` / `✗ Not quite` / `· I don't know — no problem`
    - **Answer:** the correct option
    - **Why:** the explanation — and if they were wrong, what their specific pick reveals about their model.
-8. **Make the question readable — the popup can't render math.** Before calling the tool, show each question's math in your chat message, laid out cleanly: a short bold label matching the `header` (e.g. **Probe 1**), a one-line prompt, and the expression as a stacked fraction in a ```text block, e.g.
-
-   ```text
-             3n² + 5
-     aₙ  =  ─────────        find  lim aₙ  as n → ∞
-             n² + 7n
-   ```
-
-   Then keep the popup itself short and plain: `question` = e.g. "Probe 1 — limit of aₙ? (see above)", options in Unicode math (`ln 2`, `√3`, `π/4`, `∞`, `DNE`), never LaTeX or `$`.
+8. **The popup must be self-contained and readable.** While it's open the learner may not see your chat text, so never write "see above" — the full question, including the expression, goes in the `question` field. The popup can't render LaTeX, so write math in clean Unicode with spaces and explicit grouping:
+   - `question`: "Probe 1 of 4 — As n → ∞, what does aₙ = (3n² + 5) ⁄ (n² + 7n) approach?"
+   - Use superscripts (n², n³), subscripts (aₙ), √, π, →, ∞, ⁄ or ÷ for fractions, and parentheses around every numerator/denominator. Never `$`, `\frac`, `^`, or `*`.
+   - Options in the same style: `ln 2`, `√3 ⁄ 3`, `π ⁄ 4`, `∞`, `DNE`.
+   - You may also show the expression as a stacked fraction in a ```text block in chat (it's nicer to read and lands in the notes), but only *in addition to* the self-contained popup.
 9. Ask **one question per call** when the next question depends on this answer (almost always in probing and teaching). You may batch up to 4 *independent* questions in one call only when probing separate strands at once; grade each.
 
 #### Writing quiz options — a construction procedure (applies to every quiz)
