@@ -15,6 +15,7 @@ This is a personal system I built for myself, shared as-is. Built as a pi config
 - `extensions/md-log/` — link a markdown file to the session
 - `extensions/visual-tools/` — tools for visualization subagents
 - `agents/` — `researcher`, `svg-maker`, `mermaid-maker`: the subagents the system delegates to
+- `galaxy/` — standalone web page: school topics and the Baseline app as a 3D galaxy with a timeline. Separate from the pi config; see [`galaxy/README.md`](galaxy/README.md)
 
 ## Install
 
