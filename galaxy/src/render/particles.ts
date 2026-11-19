@@ -40,8 +40,9 @@ varying vec3 vColor;
 varying float vAlpha;
 
 void main() {
-  // Every particle belongs to one node and fades in with it.
-  float fade = nodeFade(aMisc.y);
+  // Every particle belongs to one node: it fades in with it and dims with it.
+  vec4 state = nodeState(aMisc.y);
+  float fade = easeFade(state.r);
 
   // Swirl: each particle circles its cluster centre in the plane spanned by aU / aV.
   float angle = aOrbit.y + uTime * aMisc.z;
@@ -60,7 +61,7 @@ void main() {
   gl_PointSize = clamp(size, minSize, 48.0);
 
   vColor = aColor;
-  vAlpha = fade * uOpacity * dim;
+  vAlpha = fade * uOpacity * dim * (0.12 + 0.88 * state.g);
 }
 `;
 

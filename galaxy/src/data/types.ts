@@ -18,6 +18,19 @@ export interface GalaxyNode {
   date: string;
   /** Optional manual size, 1-5. When missing, size comes from the link count. */
   size?: number;
+  /** Optional paragraph shown in the node's detail panel. */
+  overview?: string;
+  /** Optional key points, shown as a list in the detail panel. */
+  points?: string[];
+  /** Optional flashcards. A node without cards has no Review button. */
+  cards?: Card[];
+}
+
+export interface Card {
+  /** Question. */
+  q: string;
+  /** Answer. */
+  a: string;
 }
 
 export type Link = readonly [string, string];

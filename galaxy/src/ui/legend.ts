@@ -14,8 +14,12 @@ export interface Legend {
   setActive(index: number): void;
   /** Update how many nodes of each cluster are currently on screen. */
   setCounts(visible: readonly number[]): void;
+  /** Show how many nodes of each cluster are due for review. */
+  setDue(due: readonly number[]): void;
   /** Collapse the panel (small screens). */
   close(): void;
+  /** True while the collapsible panel is open (small screens). */
+  readonly isOpen: boolean;
 }
 
 export function createLegend(clusters: readonly Cluster[], totals: readonly number[], handlers: LegendHandlers): Legend {
@@ -26,7 +30,8 @@ export function createLegend(clusters: readonly Cluster[], totals: readonly numb
     'aria-expanded': 'false',
     'aria-controls': 'legend-panel',
   });
-  toggle.append(el('span', 'legend-toggle-dots'), el('span', undefined, 'Clusters'));
+  const toggleDue = el('span', 'legend-due legend-toggle-due');
+  toggle.append(el('span', 'legend-toggle-dots'), el('span', undefined, 'Clusters'), toggleDue);
 
   const panel = el('div', 'glass legend-panel', undefined, { id: 'legend-panel' });
 
@@ -35,6 +40,7 @@ export function createLegend(clusters: readonly Cluster[], totals: readonly numb
 
   const rows: HTMLButtonElement[] = [];
   const counts: HTMLElement[] = [];
+  const dueBadges: HTMLElement[] = [];
   for (const group of groups) {
     const section = el('div', 'legend-group');
     if (group !== '') section.append(el('h2', 'legend-heading', group));
@@ -45,7 +51,9 @@ export function createLegend(clusters: readonly Cluster[], totals: readonly numb
       const dot = el('span', 'legend-dot');
       dot.style.setProperty('--dot', cluster.color);
       const count = el('span', 'legend-count', String(totals[index] ?? 0));
-      row.append(dot, el('span', 'legend-name', cluster.name), count);
+      const dueBadge = el('span', 'legend-due');
+      row.append(dot, el('span', 'legend-name', cluster.name), dueBadge, count);
+      dueBadges[index] = dueBadge;
       row.addEventListener('click', () => handlers.onCluster(index));
       rows[index] = row;
       counts[index] = count;
@@ -87,8 +95,24 @@ export function createLegend(clusters: readonly Cluster[], totals: readonly numb
         if (count) count.textContent = String(shown);
       });
     },
+    setDue(due) {
+      let total = 0;
+      dueBadges.forEach((badge, i) => {
+        const count = due[i] ?? 0;
+        total += count;
+        badge.textContent = count > 0 ? `${count} due` : '';
+        badge.classList.toggle('is-visible', count > 0);
+        if (count > 0) badge.setAttribute('aria-label', `${count} due for review`);
+        else badge.removeAttribute('aria-label');
+      });
+      toggleDue.textContent = total > 0 ? `${total} due` : '';
+      toggleDue.classList.toggle('is-visible', total > 0);
+    },
     close() {
       setOpen(false);
+    },
+    get isOpen() {
+      return element.classList.contains('is-open');
     },
   };
 }
