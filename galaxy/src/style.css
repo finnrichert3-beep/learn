@@ -700,6 +700,38 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+.connected-group {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 14px 0 2px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.connected-group:first-child {
+  margin-top: 0;
+}
+
+.connected-cluster {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connected-count {
+  flex: none;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 17px;
+}
+
 .detail-links {
   margin: 0 -8px;
   padding: 0;
@@ -707,12 +739,13 @@ button {
 }
 
 .detail-link {
-  display: grid;
-  grid-template-columns: 8px minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 8px;
+  /* Lines the label up with the cluster name above it. */
+  padding: 7px 8px 7px 25px;
   border-radius: 9px;
   text-align: left;
   transition: background-color 0.15s ease;
@@ -730,13 +763,15 @@ button {
   white-space: nowrap;
 }
 
-.detail-link-cluster {
-  max-width: 11em;
-  overflow: hidden;
-  color: var(--faint);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.detail-link-tag {
+  flex: none;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 17px;
 }
 
 .detail-text-button {
@@ -1424,7 +1459,7 @@ button.card:hover {
   }
 
   .detail-link {
-    padding: 10px 8px;
+    padding: 9px 8px 9px 25px;
   }
 
   .segmented-option {

@@ -51,17 +51,19 @@ Then open the address Vite prints (usually http://localhost:5173).
 
 Clicking a node flies the camera to it, lights up its links, keeps its neighbours bright and dims everything else.
 A panel slides in from the right (from the bottom on a phone) with the title, cluster and group, the date it was
-added, an overview, key points, and the list of linked nodes. Click any linked node to jump to it.
+added, an overview, key points, and **Connected skills**: every node linked to this one, grouped by cluster, with a
+total and a count per cluster. Click any of them to jump to it.
 
 - **Explore** walks a route from this node along its links, up to 8 stops, with **Back** and **Next** (or the arrow
   keys). The camera flies along each link behind a trail of particles. The route never repeats a node, prefers the
-  longest path, and moves forward in time when it has a choice.
+  longest path, and moves forward in time when it has a choice. Each stop shows the same Connected skills list,
+  with the tour's next stop marked; clicking a different one leaves the tour and opens that skill.
 - **Review** shows the node's flashcards one at a time: read the question, tap to reveal, then pick **Again**,
-  **Good** or **Easy** (or press 1, 2, 3). A switch at the top changes between this topic and its whole cluster.
+  **Good** or **Easy** (or press 1, 2, 3). A switch at the top changes between this skill and its whole cluster.
   Nodes without cards have no Review button.
-- **Esc** or the close button returns to the whole galaxy. Inside a review, Esc first goes back to the topic.
-- **Keyboard:** when a node opens, focus moves into the panel. Tab moves through the buttons and the linked
-  nodes, Enter opens the one in focus.
+- **Esc** or the close button returns to the whole galaxy. Inside a review, Esc first goes back to the skill.
+- **Keyboard:** when a node opens, focus moves into the panel. Tab moves through the buttons and the connected
+  skills, Enter opens the one in focus.
 
 **The review schedule** is kept per node and is deliberately simple:
 
@@ -217,4 +219,4 @@ npm test
 - `tests/boot.test.ts`: a broken, missing or empty `galaxy.json` shows the error card instead of crashing
 - `tests/detailFields.test.ts`: validation of `overview`, `points` and `cards`, with line numbers
 - `tests/scheduler.test.ts`: the review schedule, the flashcard session, and saving to storage that may be blocked
-- `tests/explore.test.ts`: the Explore route (linked steps only, no repeats, respects the timeline)
+- `tests/explore.test.ts`: the Explore route (linked steps only, no repeats, respects the timeline) and the grouping of connected skills by cluster

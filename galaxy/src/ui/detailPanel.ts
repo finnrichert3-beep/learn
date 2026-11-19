@@ -4,8 +4,13 @@ import { el } from './dom';
 export interface LinkedItem {
   index: number;
   label: string;
+}
+
+/** The connected skills that belong to one cluster. */
+export interface LinkedGroup {
   cluster: string;
   color: string;
+  items: LinkedItem[];
 }
 
 /** Everything the panel shows about one node. */
@@ -19,7 +24,8 @@ export interface NodeView {
   date: string;
   overview?: string;
   points: readonly string[];
-  linked: LinkedItem[];
+  /** Every skill linked to this one, grouped by cluster (this node's own cluster first). */
+  linked: LinkedGroup[];
   cardCount: number;
   /** "Not reviewed yet", "Due for review", "Next review in 3 days". Empty when the node has no cards. */
   reviewStatus: string;
@@ -31,7 +37,7 @@ export type ReviewScope = 'node' | 'cluster';
 
 export type PanelView =
   | { kind: 'detail'; node: NodeView }
-  | { kind: 'explore'; node: NodeView; step: number; total: number; nextLabel: string | null }
+  | { kind: 'explore'; node: NodeView; step: number; total: number; nextLabel: string | null; nextIndex: number }
   | {
       kind: 'review';
       node: NodeView;
@@ -94,7 +100,7 @@ function icon(path: string): SVGSVGElement {
 
 /** The side panel (bottom sheet on phones) for a node's details, the Explore tour and Review cards. */
 export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
-  const element = el('aside', 'glass detail', undefined, { 'aria-label': 'Topic details', 'aria-hidden': 'true' });
+  const element = el('aside', 'glass detail', undefined, { 'aria-label': 'Skill details', 'aria-hidden': 'true' });
   element.inert = true;
 
   const head = el('header', 'detail-head');
@@ -143,6 +149,33 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     return parts;
   };
 
+  /**
+   * "Connected skills": every linked node, grouped by cluster with a count per group.
+   * Each one is a button that jumps to that skill. `nextStop` marks the tour's next stop.
+   */
+  const connected = (node: NodeView, nextStop = -1): HTMLElement[] => {
+    const total = node.linked.reduce((sum, group) => sum + group.items.length, 0);
+    if (total === 0) return [];
+    const section = el('section', 'connected', undefined, { 'aria-label': `Connected skills, ${total}` });
+    for (const group of node.linked) {
+      const head = el('h4', 'connected-group');
+      const groupDot = el('span', 'detail-dot');
+      groupDot.style.setProperty('--dot', group.color);
+      head.append(groupDot, el('span', 'connected-cluster', group.cluster), el('span', 'connected-count', String(group.items.length)));
+      const list = el('ul', 'detail-links');
+      for (const item of group.items) {
+        const row = button('detail-link', `link-${item.index}`, () => handlers.onJump(item.index));
+        row.append(el('span', 'detail-link-label', item.label));
+        if (item.index === nextStop) row.append(el('span', 'detail-link-tag', 'Next stop'));
+        const entry = el('li');
+        entry.append(row);
+        list.append(entry);
+      }
+      section.append(head, list);
+    }
+    return [el('h3', 'detail-heading', `Connected skills · ${total}`), section];
+  };
+
   const renderDetail = (node: NodeView): void => {
     body.append(...titleBlock(node), ...notes(node));
 
@@ -160,20 +193,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     }
     if (actions.childElementCount > 0) body.append(actions);
 
-    if (node.linked.length > 0) {
-      body.append(el('h3', 'detail-heading', `Linked topics · ${node.linked.length}`));
-      const list = el('ul', 'detail-links');
-      for (const item of node.linked) {
-        const row = button('detail-link', `link-${item.index}`, () => handlers.onJump(item.index));
-        const itemDot = el('span', 'detail-dot');
-        itemDot.style.setProperty('--dot', item.color);
-        row.append(itemDot, el('span', 'detail-link-label', item.label), el('span', 'detail-link-cluster', item.cluster));
-        const entry = el('li');
-        entry.append(row);
-        list.append(entry);
-      }
-      body.append(list);
-    }
+    body.append(...connected(node));
   };
 
   const renderExplore = (view: Extract<PanelView, { kind: 'explore' }>): void => {
@@ -183,7 +203,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     const track = el('div', 'tour-track', undefined, { 'aria-hidden': 'true' });
     for (let i = 0; i < view.total; i++) track.append(el('span', i <= view.step ? 'is-done' : ''));
     tour.append(top, track);
-    body.append(tour, ...titleBlock(view.node), ...notes(view.node));
+    body.append(tour, ...titleBlock(view.node), ...notes(view.node), ...connected(view.node, view.nextIndex));
 
     const nav = el('div', 'tour-nav');
     const back = button('tour-button', 'back', () => handlers.onStep(-1));
@@ -205,7 +225,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
   const scopeSwitch = (view: { scope: ReviewScope; node: NodeView; scopeCards: Record<ReviewScope, number> }): HTMLElement => {
     const group = el('div', 'segmented', undefined, { role: 'group', 'aria-label': 'What to review' });
     const options: Array<{ scope: ReviewScope; label: string }> = [
-      { scope: 'node', label: 'This topic' },
+      { scope: 'node', label: 'This skill' },
       { scope: 'cluster', label: 'Whole cluster' },
     ];
     for (const option of options) {
@@ -244,13 +264,13 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
       }
       body.append(grades);
     }
-    body.append(button('detail-text-button', 'exit-review', handlers.onExitReview, 'Back to topic'));
+    body.append(button('detail-text-button', 'exit-review', handlers.onExitReview, 'Back to skill'));
   };
 
   const renderReviewDone = (view: Extract<PanelView, { kind: 'reviewDone' }>): void => {
     body.append(el('h2', 'detail-title', 'Review done', { tabindex: '-1', 'data-focus': 'title' }));
     const count = view.lines.length + view.more;
-    body.append(el('p', 'detail-overview', `${count} ${count === 1 ? 'topic' : 'topics'} reviewed. Progress is saved in this browser.`));
+    body.append(el('p', 'detail-overview', `${count} ${count === 1 ? 'skill' : 'skills'} reviewed. Progress is saved in this browser.`));
     const list = el('ul', 'review-summary');
     for (const line of view.lines) {
       const row = el('li');
@@ -260,7 +280,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     body.append(list);
     if (view.more > 0) body.append(el('p', 'detail-empty', `…and ${view.more} more.`));
     const done = button('tour-button is-primary is-wide', 'exit-review', handlers.onExitReview);
-    done.append(el('span', undefined, 'Back to topic'));
+    done.append(el('span', undefined, 'Back to skill'));
     body.append(done);
   };
 

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { buildNeighbours } from '../src/data/graph';
+import { buildNeighbours, groupByCluster } from '../src/data/graph';
 import { dayNumber } from '../src/data/timeline';
 import { validateGalaxyText } from '../src/data/validate';
 import { DEFAULT_MAX_STOPS, explorePath } from '../src/explore/path';
@@ -34,6 +34,48 @@ describe('buildNeighbours', () => {
       ],
     });
     expect(neighbours).toEqual([[1, 2], [0], [0], []]);
+  });
+});
+
+describe('groupByCluster', () => {
+  // node index -> cluster index
+  const nodeCluster = [0, 0, 1, 2, 1, 0, 2];
+
+  it('groups nodes by cluster, keeping their order inside each group', () => {
+    expect(groupByCluster([6, 0, 2, 5, 4], nodeCluster)).toEqual([
+      { cluster: 0, nodes: [0, 5] },
+      { cluster: 1, nodes: [2, 4] },
+      { cluster: 2, nodes: [6] },
+    ]);
+  });
+
+  it('puts the chosen cluster first and the rest in file order', () => {
+    expect(groupByCluster([0, 2, 3], nodeCluster, 2).map((group) => group.cluster)).toEqual([2, 0, 1]);
+    expect(groupByCluster([0, 2, 3], nodeCluster, 1).map((group) => group.cluster)).toEqual([1, 0, 2]);
+  });
+
+  it('leaves out clusters with nothing in them, and counts add up', () => {
+    const groups = groupByCluster([2, 4], nodeCluster, 0);
+    expect(groups).toEqual([{ cluster: 1, nodes: [2, 4] }]);
+    expect(groupByCluster([], nodeCluster, 0)).toEqual([]);
+    const all = groupByCluster([0, 1, 2, 3, 4, 5, 6], nodeCluster);
+    expect(all.reduce((sum, group) => sum + group.nodes.length, 0)).toBe(7);
+  });
+
+  it('on the seed galaxy, lists every link of Testosterone exactly once', () => {
+    const text = readFileSync(fileURLToPath(new URL('../public/galaxy.json', import.meta.url)), 'utf8');
+    const result = validateGalaxyText(text);
+    if (!result.ok) throw new Error('seed is invalid');
+    const { nodes, clusters, links } = result.data;
+    const clusterOf = nodes.map((node) => clusters.findIndex((cluster) => cluster.id === node.cluster));
+    const start = nodes.findIndex((node) => node.id === 'horm-testosterone');
+    const linkedIds = links.filter(([a, b]) => a === 'horm-testosterone' || b === 'horm-testosterone').length;
+    const groups = groupByCluster(buildNeighbours(result.data)[start] ?? [], clusterOf, clusterOf[start]);
+
+    expect(groups[0]?.cluster).toBe(clusterOf[start]);
+    expect(groups.reduce((sum, group) => sum + group.nodes.length, 0)).toBe(linkedIds);
+    expect(groups.map((group) => clusters[group.cluster]?.name)).toEqual(['Hormones', 'Sleep', 'Training', 'Nutrition', 'Environment', 'Bloodwork & Labs']);
+    for (const group of groups) for (const node of group.nodes) expect(clusterOf[node]).toBe(group.cluster);
   });
 });
 

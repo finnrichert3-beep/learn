@@ -1,3 +1,4 @@
+import { groupByCluster } from '../data/graph';
 import { dateLabel, dayNumber } from '../data/timeline';
 import type { GalaxyData } from '../data/types';
 import { explorePath } from '../explore/path';
@@ -100,15 +101,11 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
       date: dateLabel(dayNumber(item.date)),
       ...(item.overview === undefined ? {} : { overview: item.overview }),
       points: item.points ?? [],
-      linked: visibleNeighbours(node).map((other) => {
-        const otherCluster = data.clusters[nodeCluster[other] ?? 0];
-        return {
-          index: other,
-          label: data.nodes[other]?.label ?? '',
-          cluster: otherCluster?.name ?? '',
-          color: otherCluster?.color ?? '#ffffff',
-        };
-      }),
+      linked: groupByCluster(visibleNeighbours(node), nodeCluster, nodeCluster[node]).map((group) => ({
+        cluster: data.clusters[group.cluster]?.name ?? '',
+        color: data.clusters[group.cluster]?.color ?? '#ffffff',
+        items: group.nodes.map((other) => ({ index: other, label: data.nodes[other]?.label ?? '' })),
+      })),
       cardCount: cards,
       reviewStatus,
       reviewDue: status === 'due' && cards > 0,
@@ -168,6 +165,7 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
         step: tour.step,
         total: tour.path.length,
         nextLabel: next === undefined ? null : (data.nodes[next]?.label ?? ''),
+        nextIndex: next ?? -1,
       };
     }
     return { kind: 'detail', node: viewOf(focus) };
