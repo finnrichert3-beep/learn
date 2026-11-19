@@ -65,6 +65,28 @@ export class ReviewSession {
     return this.cardsPerNode.size;
   }
 
+  /** True when the current card is back after an "Again": its grade no longer counts. */
+  get currentIsRepeat(): boolean {
+    const card = this.current;
+    return card !== undefined && this.firstAnswers.has(`${card.node}:${card.card}`);
+  }
+
+  /** The weakest first answer given so far to this node's cards, or undefined if none has been answered. */
+  pendingGrade(node: number): Grade | undefined {
+    let weakest: Grade | undefined;
+    const total = this.cardsPerNode.get(node) ?? 0;
+    for (let index = 0; index < total; index++) {
+      const first = this.firstAnswers.get(`${node}:${index}`);
+      if (first !== undefined) weakest = weakest === undefined ? first : worseGrade(weakest, first);
+    }
+    return weakest;
+  }
+
+  /** Nodes that still have a card waiting in the stack (the current card included). */
+  remainingNodes(): number[] {
+    return [...new Set(this.queue.slice(this.position).map((card) => card.node))];
+  }
+
   reveal(): void {
     if (!this.finished) this.revealed = true;
   }

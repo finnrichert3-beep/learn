@@ -5,6 +5,9 @@
  *   Good   -> 1 day the first time, then each gap is about `ease` times the last (1, 3, 8, 20 days...)
  *   Easy   -> 4 days the first time, then grows faster and nudges `ease` up
  *
+ * Reviewing a node before it is due never pushes its date further out (Good and Easy
+ * leave the schedule alone); Again still resets it, because forgetting is forgetting.
+ *
  * A node that has never been reviewed is "new", not "due": it only starts
  * asking for attention once you have reviewed it at least once.
  */
@@ -44,6 +47,12 @@ export function schedule(previous: ReviewState | undefined, grade: Grade, now: n
 
   if (grade === 'again') {
     return { interval: 0, ease: Math.max(MIN_EASE, round2(ease - 0.2)), due: now + AGAIN_DELAY_MS, last: now, reviews };
+  }
+
+  // Early review of something already on a schedule: count it, but keep the date.
+  // Otherwise going through the same card five times in one sitting would buy 50 days.
+  if (previous && previous.interval >= 1 && now < previous.due) {
+    return { ...previous, last: now, reviews };
   }
 
   const good = interval < 1 ? 1 : Math.max(interval + 1, Math.round(interval * ease));

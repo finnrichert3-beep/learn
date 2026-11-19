@@ -49,10 +49,20 @@ export type PanelView =
       revealed: boolean;
       index: number;
       total: number;
-      /** How far away each grade would push the next review, e.g. "3 days". */
+      /** What each grade would do: how far away the next review lands ("3 days"), or a word for a practice card. */
       hints: Record<Grade, string>;
+      /** True when this card is back after an "Again": answering it no longer changes the schedule. */
+      repeat: boolean;
     }
-  | { kind: 'reviewDone'; node: NodeView; scope: ReviewScope; lines: Array<{ label: string; next: string }>; more: number };
+  | {
+      kind: 'reviewDone';
+      node: NodeView;
+      scope: ReviewScope;
+      lines: Array<{ label: string; next: string }>;
+      more: number;
+      /** False when the browser refused to store the progress. */
+      saved: boolean;
+    };
 
 export interface DetailPanelHandlers {
   onClose(): void;
@@ -69,7 +79,11 @@ export interface DetailPanelHandlers {
 
 export interface DetailPanel {
   element: HTMLElement;
-  show(view: PanelView): void;
+  /**
+   * Show a view. `takeFocus` moves keyboard focus into the panel; pass false for updates the
+   * user did not ask for (the timeline moved, a review became due), so focus is left where it is.
+   */
+  show(view: PanelView, takeFocus?: boolean): void;
   hide(): void;
   readonly isOpen: boolean;
 }
@@ -109,7 +123,9 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
   const close = el('button', 'detail-close', undefined, { type: 'button', 'aria-label': 'Close and show the whole galaxy', title: 'Close (Esc)' });
   close.append(icon(ICONS.close));
   close.addEventListener('click', () => handlers.onClose());
-  head.append(dot, kicker, close);
+  // Screen readers hear a revealed answer through this, since the card itself is rebuilt on every change.
+  const announcer = el('span', 'visually-hidden', '', { role: 'status', 'aria-live': 'polite' });
+  head.append(dot, kicker, close, announcer);
 
   const body = el('div', 'detail-body');
   element.append(head, body);
@@ -177,7 +193,8 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
   };
 
   const renderDetail = (node: NodeView): void => {
-    body.append(...titleBlock(node), ...notes(node));
+    // The two main actions sit right under the title, so they are on screen without scrolling (phones too).
+    body.append(...titleBlock(node));
 
     const actions = el('div', 'detail-actions');
     if (node.canExplore) {
@@ -193,7 +210,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     }
     if (actions.childElementCount > 0) body.append(actions);
 
-    body.append(...connected(node));
+    body.append(...notes(node), ...connected(node));
   };
 
   const renderExplore = (view: Extract<PanelView, { kind: 'explore' }>): void => {
@@ -247,18 +264,18 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     face.append(el('span', 'card-side', 'Question'), el('p', 'card-question', view.question));
     if (view.revealed) {
       face.append(el('span', 'card-side', 'Answer'), el('p', 'card-answer', view.answer));
-      face.setAttribute('aria-live', 'polite');
     } else {
       face.append(el('span', 'card-hint', 'Tap to reveal the answer'));
     }
     body.append(face);
 
     if (view.revealed) {
+      if (view.repeat) body.append(el('p', 'review-note', 'Practice round: this card is already graded, so the schedule stays as it is.'));
       const grades = el('div', 'grades', undefined, { role: 'group', 'aria-label': 'How well did you know it?' });
       for (const { grade, label, key } of GRADES) {
         const choice = button(`grade grade-${grade}`, `grade-${grade}`, () => handlers.onGrade(grade));
         choice.append(el('span', 'grade-label', label), el('span', 'grade-hint', view.hints[grade]));
-        choice.setAttribute('aria-label', `${label}: review again in ${view.hints[grade]}`);
+        choice.setAttribute('aria-label', view.repeat ? `${label}: ${view.hints[grade]}` : `${label}: next review in ${view.hints[grade]}`);
         choice.title = `${label} (press ${key})`;
         grades.append(choice);
       }
@@ -270,7 +287,11 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
   const renderReviewDone = (view: Extract<PanelView, { kind: 'reviewDone' }>): void => {
     body.append(el('h2', 'detail-title', 'Review done', { tabindex: '-1', 'data-focus': 'title' }));
     const count = view.lines.length + view.more;
-    body.append(el('p', 'detail-overview', `${count} ${count === 1 ? 'skill' : 'skills'} reviewed. Progress is saved in this browser.`));
+    const reviewed = `${count} ${count === 1 ? 'skill' : 'skills'} reviewed.`;
+    const kept = view.saved
+      ? 'Progress is saved in this browser.'
+      : 'This browser is blocking storage, so this progress will be gone when the page closes.';
+    body.append(el('p', 'detail-overview', `${reviewed} ${kept}`));
     const list = el('ul', 'review-summary');
     for (const line of view.lines) {
       const row = el('li');
@@ -289,7 +310,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
     get isOpen() {
       return open;
     },
-    show(view) {
+    show(view, takeFocus = true) {
       // What had focus before the re-render, so it can go back to the matching control.
       const active = document.activeElement;
       const previousFocus = active instanceof HTMLElement && element.contains(active) ? (active.dataset.focus ?? '') : '';
@@ -309,6 +330,7 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
       else if (view.kind === 'review') renderReview(view);
       else renderReviewDone(view);
       body.scrollTop = scroll;
+      announcer.textContent = view.kind === 'review' && view.revealed ? `Answer: ${view.answer}` : '';
 
       open = true;
       element.inert = false;
@@ -320,6 +342,8 @@ export function createDetailPanel(handlers: DetailPanelHandlers): DetailPanel {
       const fallback = view.kind === 'review' ? (view.revealed ? 'grade-good' : 'reveal') : 'title';
       const keep = sameScreen || (view.kind === 'explore' && (previousFocus === 'next' || previousFocus === 'back'));
       const find = (name: string): HTMLElement | null => element.querySelector<HTMLElement>(`[data-focus="${name}"]:not(:disabled)`);
+      // An update nobody asked for must not pull focus out of the timeline or the legend.
+      if (!takeFocus && previousFocus === '') return;
       const target = (keep && previousFocus !== '' ? find(previousFocus) : null) ?? find(fallback) ?? find('title');
       target?.focus({ preventScroll: true });
     },

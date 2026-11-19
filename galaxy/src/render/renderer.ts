@@ -147,6 +147,8 @@ export class GalaxyRenderer {
   private idleTimer = 0;
   private rotateSpeed = 0;
   private atHome = true;
+  /** What the camera was last sent to look at, so it can follow if a resize moves it. */
+  private anchor: { kind: 'node' | 'cluster'; index: number } | null = null;
   private readonly homePosition = new THREE.Vector3();
   private readonly homeTarget = new THREE.Vector3();
   private fly: {
@@ -386,8 +388,20 @@ export class GalaxyRenderer {
     const { width: freeWidth, height: freeHeight } = this.freeArea(this.insets);
 
     // The two super-clusters sit side by side on wide screens and stacked on tall ones.
+    // Re-arranging moves every node, so a camera that is looking at one has to move with it.
     const portrait = THREE.MathUtils.smoothstep(1.25 - freeWidth / freeHeight, 0, 0.45);
+    const before = this.anchorPoint();
     this.arrangeClusters(-portrait * (Math.PI / 2));
+    const after = this.anchorPoint();
+    if (before && after && !this.atHome) {
+      const moved = after.sub(before);
+      this.camera.position.add(moved);
+      this.controls.target.add(moved);
+      if (this.fly) {
+        for (const point of [this.fly.fromPosition, this.fly.fromTarget, this.fly.toPosition, this.fly.toTarget]) point.add(moved);
+      }
+      this.controls.update();
+    }
 
     // Find the closest camera distance at which every cluster still fits in the free area.
     const tanHalf = Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
@@ -458,6 +472,13 @@ export class GalaxyRenderer {
     this.nodes.geometry.getAttribute('position').needsUpdate = true;
     this.links.setPositions(this.positions);
     (this.particles.points.material.uniforms.uArrange!.value as THREE.Matrix3).setFromMatrix4(this.arrange);
+  }
+
+  /** Where the thing the camera is anchored to currently is. */
+  private anchorPoint(): THREE.Vector3 | null {
+    if (!this.anchor) return null;
+    if (this.anchor.kind === 'cluster') return this.clusterCenter(this.anchor.index);
+    return new THREE.Vector3().fromArray(this.positions, this.anchor.index * 3);
   }
 
   private clusterCenter(index: number): THREE.Vector3 | null {
@@ -565,6 +586,7 @@ export class GalaxyRenderer {
     const direction = this.camera.position.clone().sub(this.controls.target).normalize();
 
     this.atHome = false;
+    this.anchor = { kind: 'cluster', index };
     this.startFly(target.clone().addScaledVector(direction, distance), target);
   }
 
@@ -603,6 +625,7 @@ export class GalaxyRenderer {
     }
 
     this.atHome = false;
+    this.anchor = { kind: 'node', index };
     this.startFly(target.clone().addScaledVector(direction, distance), target, seconds);
   }
 
@@ -615,6 +638,7 @@ export class GalaxyRenderer {
 
   flyHome(): void {
     this.atHome = true;
+    this.anchor = null;
     this.trail.stop();
     this.startFly(this.homePosition.clone(), this.homeTarget.clone());
   }

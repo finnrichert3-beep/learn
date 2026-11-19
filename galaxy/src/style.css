@@ -666,7 +666,7 @@ button {
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .detail-action {
@@ -1028,6 +1028,21 @@ button.card:hover {
   margin-top: 26px;
   color: var(--muted);
   font-size: 13px;
+}
+
+.review-note {
+  margin: 10px 0 0;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .grades {

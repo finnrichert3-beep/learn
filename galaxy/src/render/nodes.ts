@@ -16,6 +16,9 @@ export function spriteDiameter(size: number): number {
 
 /** A node that is due for review is drawn on a larger sprite, to make room for its ring. */
 const DUE_SPRITE_SCALE = 2.1;
+/** Largest glow, and largest sprite, in device pixels. The sprite cap stays under what phone GPUs allow for points. */
+const MAX_GLOW_PX = 400;
+const MAX_SPRITE_PX = 500;
 
 const vertexShader = /* glsl */ `
 ${FADE_GLSL}
@@ -49,9 +52,12 @@ void main() {
   float flare = 1.0 + 0.8 * sin(fade * 3.14159265);
   float shimmer = 1.0 + 0.05 * sin(uTime * 1.1 + aIndex * 2.399);
   // Due nodes get a bigger sprite; the fragment shader shrinks the glow back and uses the rim for a ring.
-  float spread = mix(1.0, ${DUE_SPRITE_SCALE.toFixed(2)}, due);
-  float size = aSize * flare * shimmer * (1.0 + 0.5 * lift) * spread * uScale / -mv.z;
-  gl_PointSize = clamp(size, 5.0 * uPixelRatio * spread, 420.0);
+  // The glow itself is sized first, then the sprite grows around it as far as the size cap allows,
+  // so a node keeps the same glow whether or not it is due, even in extreme close-up.
+  float glow = clamp(aSize * flare * shimmer * (1.0 + 0.5 * lift) * uScale / -mv.z, 5.0 * uPixelRatio, ${MAX_GLOW_PX.toFixed(1)});
+  float sprite = min(glow * mix(1.0, ${DUE_SPRITE_SCALE.toFixed(2)}, due), ${MAX_SPRITE_PX.toFixed(1)});
+  float spread = sprite / glow;
+  gl_PointSize = sprite;
 
   // The ring grows outwards and fades, once every two seconds. Without motion it sits still.
   float phase = mix(fract(uTime * 0.5 + aIndex * 0.37), 0.42, uStill);

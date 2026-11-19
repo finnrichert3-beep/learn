@@ -219,7 +219,8 @@ export function startApp(root: HTMLElement, data: GalaxyData): void {
 
   let press: { x: number; y: number; time: number } | null = null;
   canvas.addEventListener('pointerdown', (event) => {
-    press = { x: event.clientX, y: event.clientY, time: performance.now() };
+    // Only the main button (or a touch) can open a node; right-drag pans and must not count as a click.
+    press = event.button === 0 ? { x: event.clientX, y: event.clientY, time: performance.now() } : null;
     legend.close();
   });
   canvas.addEventListener('pointermove', (event) => {

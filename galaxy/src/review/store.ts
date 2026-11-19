@@ -16,7 +16,7 @@ export interface StorageLike {
  * entry by entry, so one bad value never costs the whole history.
  */
 export function parseStore(raw: string | null | undefined): ReviewStore {
-  const store: ReviewStore = {};
+  const store = emptyStore();
   if (!raw) return store;
   let parsed: unknown;
   try {
@@ -30,6 +30,29 @@ export function parseStore(raw: string | null | undefined): ReviewStore {
     if (state) store[id] = state;
   }
   return store;
+}
+
+/**
+ * A store with no prototype, so node ids such as "constructor" or "__proto__" are
+ * ordinary keys and never collide with built-in object properties.
+ */
+export function emptyStore(): ReviewStore {
+  return Object.create(null) as ReviewStore;
+}
+
+/**
+ * Combine two copies of the store (for example this tab's and another tab's). For each
+ * node the entry that was reviewed most recently wins.
+ */
+export function mergeStores(a: ReviewStore, b: ReviewStore): ReviewStore {
+  const merged = emptyStore();
+  for (const source of [a, b]) {
+    for (const [id, state] of Object.entries(source)) {
+      const existing = merged[id];
+      if (!existing || state.last > existing.last) merged[id] = state;
+    }
+  }
+  return merged;
 }
 
 function toState(value: unknown): ReviewState | undefined {
@@ -55,11 +78,11 @@ export function browserStorage(): StorageLike | null {
 
 /** Load saved progress. Never throws: without usable storage it returns an empty store. */
 export function loadStore(storage: StorageLike | null = browserStorage()): ReviewStore {
-  if (!storage) return {};
+  if (!storage) return emptyStore();
   try {
     return parseStore(storage.getItem(STORAGE_KEY));
   } catch {
-    return {};
+    return emptyStore();
   }
 }
 

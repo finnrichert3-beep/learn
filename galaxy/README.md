@@ -57,7 +57,8 @@ total and a count per cluster. Click any of them to jump to it.
 - **Explore** walks a route from this node along its links, up to 8 stops, with **Back** and **Next** (or the arrow
   keys). The camera flies along each link behind a trail of particles. The route never repeats a node, prefers the
   longest path, and moves forward in time when it has a choice. Each stop shows the same Connected skills list,
-  with the tour's next stop marked; clicking a different one leaves the tour and opens that skill.
+  with the tour's next stop marked. Clicking the marked one is the same as Next; clicking a different one leaves
+  the tour and opens that skill.
 - **Review** shows the node's flashcards one at a time: read the question, tap to reveal, then pick **Again**,
   **Good** or **Easy** (or press 1, 2, 3). A switch at the top changes between this skill and its whole cluster.
   Nodes without cards have no Review button.
@@ -73,13 +74,17 @@ total and a count per cluster. Click any of them to jump to it.
 | Good | 1 day | about 2.5 times the last gap: 1, 3, 8, 20, 50 days |
 | Easy | 4 days | grows faster still, and later gaps grow a little faster too |
 
-A node with several cards gets the grade of its weakest card. A node that is due shows a slow ring in the galaxy and
+Reviewing a node before it is due doesn't push its date further out: Good and Easy leave the schedule as it is,
+and Again still resets it. So going through the same cards twice in one sitting can't buy extra days.
+
+A node with several cards gets the grade of its weakest card. A card you answered Again comes back at the end of
+the stack for practice, but only your first answer to each card counts. A node that is due shows a slow ring in the galaxy and
 is counted next to its cluster in the legend. Nodes you have never reviewed are "new", not "due", so the galaxy
 doesn't start out covered in rings.
 
 Progress is saved in this browser's `localStorage` under `galaxy.review.v1` and nowhere else. It is not synced
-between devices, and clearing site data resets it. If the browser blocks storage, review still works for the
-session; it just isn't remembered.
+between devices, and clearing site data resets it. Two tabs of the same browser share it. If the browser blocks
+storage, review still works for the session and the summary screen tells you it won't be remembered.
 
 Add `?debug` to the address for an FPS readout (frame rate, frame time, particles drawn, quality level).
 Add `?lockquality` to stop the automatic quality drop, for benchmarking.
@@ -219,4 +224,5 @@ npm test
 - `tests/boot.test.ts`: a broken, missing or empty `galaxy.json` shows the error card instead of crashing
 - `tests/detailFields.test.ts`: validation of `overview`, `points` and `cards`, with line numbers
 - `tests/scheduler.test.ts`: the review schedule, the flashcard session, and saving to storage that may be blocked
+- `tests/detailMode.test.ts`: the panel and its state: focus handling, tours, reviews, timeline changes while a node is open
 - `tests/explore.test.ts`: the Explore route (linked steps only, no repeats, respects the timeline) and the grouping of connected skills by cluster

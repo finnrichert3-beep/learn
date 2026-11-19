@@ -13,7 +13,7 @@ import {
   type Grade,
   type ReviewState,
 } from '../src/review/scheduler';
-import { STORAGE_KEY, loadStore, parseStore, saveStore, type StorageLike } from '../src/review/store';
+import { STORAGE_KEY, emptyStore, loadStore, mergeStores, parseStore, saveStore, type StorageLike } from '../src/review/store';
 import { ReviewSession } from '../src/review/session';
 
 const NOW = Date.UTC(2026, 10, 19, 15, 0, 0);
@@ -49,25 +49,57 @@ describe('schedule', () => {
     expect(state.ease).toBe(2.3);
   });
 
-  it('repeated Good spaces reviews further and further apart', () => {
+  it('Good on each due date spaces reviews further and further apart', () => {
     const intervals: number[] = [];
     let state: ReviewState | undefined;
+    let now = NOW;
     for (let i = 0; i < 5; i++) {
-      state = schedule(state, 'good', NOW);
+      state = schedule(state, 'good', now);
       intervals.push(state.interval);
+      now = state.due;
     }
     expect(intervals).toEqual([1, 3, 8, 20, 50]);
   });
 
-  it('Easy always schedules further out than Good, and Good further than Again', () => {
+  it('on the due date, Easy lands later than Good and Good later than Again', () => {
     for (const history of [[], ['good'], ['good', 'good'], ['easy', 'good', 'good'], ['again']] as Grade[][]) {
       const before = history.length > 0 ? run(history) : undefined;
-      const again = schedule(before, 'again', NOW).due;
-      const good = schedule(before, 'good', NOW).due;
-      const easy = schedule(before, 'easy', NOW).due;
+      const now = before?.due ?? NOW;
+      const again = schedule(before, 'again', now).due;
+      const good = schedule(before, 'good', now).due;
+      const easy = schedule(before, 'easy', now).due;
       expect(again).toBeLessThan(good);
       expect(good).toBeLessThan(easy);
     }
+  });
+
+  it('at the one-year cap Easy and Good land on the same day (never Easy sooner)', () => {
+    const capped = run(Array<Grade>(12).fill('easy'));
+    const good = schedule(capped, 'good', capped.due);
+    const easy = schedule(capped, 'easy', capped.due);
+    expect(good.interval).toBe(MAX_INTERVAL_DAYS);
+    expect(easy.due).toBe(good.due);
+  });
+
+  it('reviewing before the due date does not push the date out', () => {
+    const first = schedule(undefined, 'good', NOW);
+    // Five more passes in the same sitting: the date must not move.
+    let state = first;
+    for (let i = 0; i < 5; i++) state = schedule(state, i % 2 === 0 ? 'good' : 'easy', NOW + 1000 * (i + 1));
+    expect(state.due).toBe(first.due);
+    expect(state.interval).toBe(1);
+    expect(state.ease).toBe(first.ease);
+    expect(state.reviews).toBe(6);
+    expect(state.last).toBe(NOW + 5000);
+  });
+
+  it('forgetting early still resets, and relearning can graduate without waiting', () => {
+    const scheduled = run(['good', 'good']);
+    const lapsed = schedule(scheduled, 'again', NOW + 60_000);
+    expect(lapsed.interval).toBe(0);
+    expect(lapsed.due).toBe(NOW + 60_000 + AGAIN_DELAY_MS);
+    // Still inside the 10 minutes, a Good moves it on to tomorrow.
+    expect(schedule(lapsed, 'good', NOW + 120_000).interval).toBe(1);
   });
 
   it('Again resets the gap: the next Good is 1 day, not the old long gap', () => {
@@ -169,6 +201,34 @@ describe('review store', () => {
     expect(parseStore(raw)).toEqual({ ok: good });
   });
 
+  it('treats node ids like "constructor" and "__proto__" as ordinary keys', () => {
+    const store = emptyStore();
+    expect(store['constructor']).toBeUndefined();
+    expect(store['toString']).toBeUndefined();
+    expect(parseStore('{}')['constructor']).toBeUndefined();
+
+    const state = schedule(undefined, 'good', NOW);
+    store['constructor'] = state;
+    store['__proto__'] = state;
+    const storage = fakeStorage();
+    saveStore(store, storage);
+    const loaded = loadStore(storage);
+    expect(Object.keys(loaded).sort()).toEqual(['__proto__', 'constructor']);
+    expect(loaded['__proto__']).toEqual(state);
+  });
+
+  it('merges two copies, keeping the most recent review of each node', () => {
+    const older = schedule(undefined, 'good', NOW);
+    const newer = schedule(older, 'again', NOW + 5000);
+    const other = schedule(undefined, 'easy', NOW);
+    const mine = Object.assign(emptyStore(), { a: older, b: other });
+    const theirs = Object.assign(emptyStore(), { a: newer, c: other });
+    const merged = mergeStores(mine, theirs);
+    expect(merged['a']).toEqual(newer);
+    expect(Object.keys(merged).sort()).toEqual(['a', 'b', 'c']);
+    expect(mergeStores(theirs, mine)['a']).toEqual(newer);
+  });
+
   it('never throws when storage is blocked, missing or full', () => {
     const blocked: StorageLike = {
       getItem() {
@@ -227,6 +287,33 @@ describe('ReviewSession', () => {
       { node: 1, grade: 'again' },
       { node: 2, grade: 'easy' },
     ]);
+  });
+
+  it('knows when a card is a repeat, and the weakest grade given so far', () => {
+    const session = new ReviewSession([{ node: 1, cards: 2 }]);
+    expect(session.currentIsRepeat).toBe(false);
+    expect(session.pendingGrade(1)).toBeUndefined();
+    session.answer('again');
+    expect(session.pendingGrade(1)).toBe('again');
+    expect(session.currentIsRepeat).toBe(false);
+    session.answer('easy');
+    expect(session.pendingGrade(1)).toBe('again');
+    expect(session.currentIsRepeat).toBe(true);
+    expect(session.pendingGrade(7)).toBeUndefined();
+  });
+
+  it('lists the nodes that still have cards waiting', () => {
+    const session = new ReviewSession([
+      { node: 1, cards: 1 },
+      { node: 2, cards: 2 },
+      { node: 3, cards: 1 },
+    ]);
+    expect(session.remainingNodes()).toEqual([1, 2, 3]);
+    session.answer('again');
+    expect(session.remainingNodes()).toEqual([2, 3, 1]);
+    session.answer('good');
+    session.answer('good');
+    expect(session.remainingNodes()).toEqual([3, 1]);
   });
 
   it('hides the answer again after each card', () => {

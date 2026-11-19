@@ -3,9 +3,9 @@ import { dateLabel, dayNumber } from '../data/timeline';
 import type { GalaxyData } from '../data/types';
 import { explorePath } from '../explore/path';
 import type { GalaxyRenderer } from '../render/renderer';
-import { formatSpan, isDue, schedule, statusOf, type Grade } from '../review/scheduler';
+import { formatSpan, isDue, schedule, statusOf, worseGrade, type Grade } from '../review/scheduler';
 import { ReviewSession } from '../review/session';
-import { loadStore, saveStore, type ReviewStore } from '../review/store';
+import { STORAGE_KEY, loadStore, mergeStores, parseStore, saveStore, type ReviewStore, type StorageLike } from '../review/store';
 import { createDetailPanel, type DetailPanel, type NodeView, type PanelView, type ReviewScope } from '../ui/detailPanel';
 
 export interface DetailModeOptions {
@@ -23,6 +23,8 @@ export interface DetailModeOptions {
   onDueChange(due: readonly boolean[]): void;
   /** Current time in ms. Injectable for tests. */
   now?: () => number;
+  /** Where review progress is kept. Defaults to the browser's localStorage; injectable for tests. */
+  storage?: StorageLike | null;
 }
 
 export interface DetailMode {
@@ -60,9 +62,20 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
   let focus = -1;
   let tour: { path: number[]; step: number } | null = null;
   let review: { session: ReviewSession; scope: ReviewScope; origin: number } | null = null;
-  let reviewDone: { scope: ReviewScope; origin: number; lines: Array<{ label: string; next: string }>; more: number } | null = null;
+  let reviewDone: {
+    scope: ReviewScope;
+    origin: number;
+    lines: Array<{ label: string; next: string }>;
+    more: number;
+    saved: boolean;
+  } | null = null;
+  /** What the panel last showed that depends on the timeline, so an unchanged day doesn't rebuild it. */
+  let shown = '';
 
-  const store: ReviewStore = loadStore();
+  const loadSaved = (): ReviewStore => (options.storage === undefined ? loadStore() : loadStore(options.storage));
+  const store: ReviewStore = loadSaved();
+  /** False once the browser has refused to store progress. */
+  let saved = true;
   let due: boolean[] = data.nodes.map(() => false);
 
   const cardsOf = (node: number): number => data.nodes[node]?.cards?.length ?? 0;
@@ -74,7 +87,17 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
     const next = data.nodes.map((node, index) => cardsOf(index) > 0 && isDue(store[node.id], time));
     const changed = next.some((value, index) => value !== due[index]);
     due = next;
-    if (changed) options.onDueChange(due);
+    if (!changed) return;
+    options.onDueChange(due);
+    // The open panel shows "Next review in ..." / "Due for review": keep it in step with the rings.
+    if (focus >= 0 && !review && !reviewDone) render(false);
+  };
+
+  /** Record a node's new schedule, keeping whatever another tab has saved in the meantime. */
+  const persist = (id: string, state: ReviewStore[string]): void => {
+    store[id] = state;
+    Object.assign(store, mergeStores(loadSaved(), store));
+    saved = options.storage === undefined ? saveStore(store) : saveStore(store, options.storage);
   };
 
   const viewOf = (node: number): NodeView => {
@@ -109,7 +132,8 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
       cardCount: cards,
       reviewStatus,
       reviewDue: status === 'due' && cards > 0,
-      canExplore: routeFrom(node).length > 1,
+      // A route needs at least one linked node that is on screen.
+      canExplore: visibleNeighbours(node).length > 0,
     };
   };
 
@@ -133,7 +157,14 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
   const currentView = (): PanelView | null => {
     if (focus < 0) return null;
     if (reviewDone) {
-      return { kind: 'reviewDone', node: viewOf(reviewDone.origin), scope: reviewDone.scope, lines: reviewDone.lines, more: reviewDone.more };
+      return {
+        kind: 'reviewDone',
+        node: viewOf(reviewDone.origin),
+        scope: reviewDone.scope,
+        lines: reviewDone.lines,
+        more: reviewDone.more,
+        saved: reviewDone.saved,
+      };
     }
     if (review) {
       const card = review.session.current;
@@ -141,7 +172,15 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
       const item = data.nodes[card.node]!;
       const content = item.cards?.[card.card];
       const time = now();
-      const hint = (grade: Grade): string => formatSpan(schedule(store[item.id], grade, time).due - time);
+      // A node is graded by its weakest card, so an earlier "Again" on this node caps what this card can do.
+      // A card that is back after "Again" changes nothing, and says so instead of promising a date.
+      const repeat = review.session.currentIsRepeat;
+      const weakest = review.session.pendingGrade(card.node);
+      const hint = (grade: Grade): string => {
+        if (repeat) return grade === 'again' ? 'once more' : 'got it';
+        const effective = weakest === undefined ? grade : worseGrade(weakest, grade);
+        return formatSpan(schedule(store[item.id], effective, time).due - time);
+      };
       return {
         kind: 'review',
         node: viewOf(card.node),
@@ -155,6 +194,7 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
         revealed: review.session.revealed,
         ...review.session.progress,
         hints: { again: hint('again'), good: hint('good'), easy: hint('easy') },
+        repeat,
       };
     }
     if (tour) {
@@ -171,10 +211,20 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
     return { kind: 'detail', node: viewOf(focus) };
   };
 
-  const render = (): void => {
+  /** Redraw the panel. `takeFocus` is false for updates the user didn't trigger (timeline, due timer). */
+  const render = (takeFocus = true): void => {
     const view = currentView();
-    if (view) panel.show(view);
+    if (view) panel.show(view, takeFocus);
+    shown = '';
   };
+
+  /** Everything in the panel that changes when the timeline moves. */
+  const timelineSignature = (): string =>
+    [
+      visibleNeighbours(focus).join(','),
+      tour ? tour.path.join(',') : '',
+      review ? countCards(reviewItems(review.origin, 'cluster')) : '',
+    ].join('|');
 
   /** Move the focus (dimming, lit links, camera) to a node. `from` flies along the link from that node. */
   const focusOn = (node: number, from = -1): void => {
@@ -264,8 +314,7 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
     const result = review.session.answer(grade);
     if (result) {
       const id = data.nodes[result.node]!.id;
-      store[id] = schedule(store[id], result.grade, now());
-      saveStore(store);
+      persist(id, schedule(store[id], result.grade, now()));
       refreshDue();
     }
     if (review.session.finished) {
@@ -279,6 +328,7 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
         origin: review.origin,
         lines: lines.slice(0, MAX_SUMMARY_LINES),
         more: Math.max(0, lines.length - MAX_SUMMARY_LINES),
+        saved,
       };
       const origin = review.origin;
       review = null;
@@ -299,7 +349,12 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
 
   const panel = createDetailPanel({
     onClose: () => close(),
-    onJump: (node) => open(node),
+    onJump(node) {
+      // On a tour, the next (or previous) stop in the list is the same as pressing Next (or Back).
+      if (tour && node === tour.path[tour.step + 1]) stepExplore(1);
+      else if (tour && node === tour.path[tour.step - 1]) stepExplore(-1);
+      else open(node);
+    },
     onExplore: startExplore,
     onReview: () => startReview('node'),
     onStep: stepExplore,
@@ -317,6 +372,15 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
   });
 
   refreshDue();
+
+  // Another tab reviewed something: take its progress on board straight away.
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (event) => {
+      if (event.key !== STORAGE_KEY || event.newValue === null) return;
+      Object.assign(store, mergeStores(store, parseStore(event.newValue)));
+      refreshDue();
+    });
+  }
 
   return {
     panel,
@@ -361,9 +425,18 @@ export function createDetailMode(options: DetailModeOptions): DetailMode {
         close();
         return;
       }
+      // A review can't go on to cards whose node is no longer on screen: go back to the skill it started from.
+      if (review && review.session.remainingNodes().some((node) => !mask[node])) {
+        exitReview();
+        return;
+      }
       if (tour && tour.path.some((node) => !mask[node])) tour = null;
+      // Most days change nothing the panel shows. Leave it (and the keyboard focus) alone then.
+      const signature = timelineSignature();
+      if (signature === shown) return;
       renderer.setFocus(focus, tour ? [...visibleNeighbours(focus), ...tour.path] : visibleNeighbours(focus));
-      render();
+      render(false);
+      shown = signature;
     },
     refreshDue,
     state() {
