@@ -11,9 +11,14 @@ export interface LinkVisualInput {
   bridges: boolean[];
 }
 
+/** Brightness of links that don't touch the focused node, while a node is in focus. */
+const OTHER_LINK_LEVEL = 0.22;
+
 const vertexShader = /* glsl */ `
 ${FADE_GLSL}
 uniform float uHover;
+uniform float uFocus;
+uniform float uFocusMix;
 uniform float uOpacity;
 attribute vec3 aColor;
 attribute vec3 aEnds; // (node a, node b, strength)
@@ -23,10 +28,14 @@ varying float vAlpha;
 void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   // A link only shows once both of its nodes are on screen.
-  float fade = min(nodeFade(aEnds.x), nodeFade(aEnds.y));
-  float touched = 1.0 - step(0.5, min(abs(aEnds.x - uHover), abs(aEnds.y - uHover)));
+  float fade = min(easeFade(nodeState(aEnds.x).r), easeFade(nodeState(aEnds.y).r));
+  float hovered = 1.0 - step(0.5, min(abs(aEnds.x - uHover), abs(aEnds.y - uHover)));
+  float focused = 1.0 - step(0.5, min(abs(aEnds.x - uFocus), abs(aEnds.y - uFocus)));
+  // While a node is in focus its own links light up and every other link recedes.
+  float lit = max(hovered, focused * uFocusMix);
+  float recede = mix(1.0, ${OTHER_LINK_LEVEL.toFixed(2)}, uFocusMix * (1.0 - focused));
   vColor = aColor;
-  vAlpha = fade * uOpacity * aEnds.z * (1.0 + 3.5 * touched);
+  vAlpha = fade * uOpacity * aEnds.z * recede * (1.0 + 3.5 * lit);
 }
 `;
 
@@ -77,6 +86,8 @@ export function createLinks(input: LinkVisualInput, fade: NodeFade): LinkLines {
       uFade: { value: fade.texture },
       uFadeSize: { value: fade.size },
       uHover: { value: -1 },
+      uFocus: { value: -1 },
+      uFocusMix: { value: 0 },
       uOpacity: { value: 0.11 },
     },
     transparent: true,

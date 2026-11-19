@@ -180,7 +180,7 @@ button {
 
 .legend-row {
   display: grid;
-  grid-template-columns: 8px minmax(0, 1fr) auto;
+  grid-template-columns: 8px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -227,6 +227,23 @@ button {
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
   text-align: right;
+}
+
+.legend-due {
+  display: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.legend-due.is-visible {
+  display: inline-block;
 }
 
 .legend-overview {
@@ -463,12 +480,664 @@ button {
   margin-right: 7px;
 }
 
+/* ---- node detail panel --------------------------------------------------------- */
+
+.detail {
+  --accent: #fff;
+  position: absolute;
+  top: calc(var(--edge) + env(safe-area-inset-top, 0px));
+  right: calc(var(--edge) + env(safe-area-inset-right, 0px));
+  /* Stops above the timeline bar. */
+  max-height: calc(100dvh - 2 * var(--edge) - 78px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  width: min(384px, 44vw);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(28px);
+  transition:
+    opacity 0.26s ease,
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 0.32s;
+  /* Text sits on top of the galaxy, so the glass is a little denser here. */
+  background: rgba(11, 13, 20, 0.66);
+}
+
+.detail.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.26s ease,
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  padding: 14px 12px 0 20px;
+}
+
+.detail-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot, #fff);
+  box-shadow: 0 0 10px var(--dot, #fff);
+}
+
+.detail-kicker {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--muted);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.detail-close:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.detail svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex: none;
+}
+
+.detail-body {
+  flex: 1;
+  min-height: 0;
+  padding: 6px 20px 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 8px 0 0;
+  color: var(--faint);
+  font-size: 12.5px;
+}
+
+.detail-chip {
+  padding: 2px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.detail-chip.is-due {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.92);
+  color: #07080c;
+  font-weight: 600;
+}
+
+.detail-overview {
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.detail-empty {
+  margin: 16px 0 0;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.detail-heading {
+  margin: 22px 0 8px;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.detail-points {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.detail-points li {
+  position: relative;
+  padding-left: 16px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.detail-points li::before {
+  content: '';
+  position: absolute;
+  top: 0.62em;
+  left: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.85;
+}
+
+.detail-actions {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detail-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 550;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.detail-action:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.detail-action-count {
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.connected-group {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 14px 0 2px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.connected-group:first-child {
+  margin-top: 0;
+}
+
+.connected-cluster {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connected-count {
+  flex: none;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 17px;
+}
+
+.detail-links {
+  margin: 0 -8px;
+  padding: 0;
+  list-style: none;
+}
+
+.detail-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  /* Lines the label up with the cluster name above it. */
+  padding: 7px 8px 7px 25px;
+  border-radius: 9px;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.detail-link:hover {
+  background: var(--hover);
+}
+
+.detail-link-label {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 450;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-link-tag {
+  flex: none;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 17px;
+}
+
+.detail-text-button {
+  display: block;
+  margin: 14px auto 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.detail-text-button:hover {
+  color: var(--text);
+}
+
+/* ---- explore tour ---- */
+
+.tour {
+  margin: 4px 0 16px;
+}
+
+.tour-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tour-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tour-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.tour-track span {
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  transition: background-color 0.3s ease;
+}
+
+.tour-track span.is-done {
+  background: var(--accent);
+}
+
+.tour-nav {
+  /* Pinned to the bottom of the panel, so Next is always one tap away. */
+  position: sticky;
+  bottom: -20px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  margin: 8px -4px 0;
+  padding: 14px 4px 20px;
+  background: linear-gradient(to bottom, transparent, rgba(11, 13, 20, 0.96) 22%);
+}
+
+.tour-nav .tour-button:not(.is-primary) {
+  background: #1a1d28;
+}
+
+.tour-nav .tour-button:not(.is-primary):hover:not(:disabled) {
+  background: #262a38;
+}
+
+.tour-nav + .detail-text-button {
+  margin-top: 0;
+}
+
+.tour-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 550;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.tour-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tour-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.tour-button.is-primary {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.94);
+  color: #07080c;
+}
+
+.tour-button.is-primary:hover {
+  background: #fff;
+}
+
+.tour-button.is-wide {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.tour-next-text {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.tour-next-word {
+  flex: none;
+  opacity: 0.6;
+}
+
+.tour-next-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- review cards ---- */
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-top: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.segmented-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.segmented-option[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.segmented-count {
+  color: var(--faint);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-progress {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0 8px;
+  color: var(--faint);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-topic {
+  overflow: hidden;
+  color: var(--muted);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card {
+  display: block;
+  width: 100%;
+  min-height: 168px;
+  padding: 18px 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+    rgba(255, 255, 255, 0.05);
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+button.card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.card-side {
+  display: block;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.card-question {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.card-answer {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.card-question + .card-side {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.card-hint {
+  display: block;
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.review-note {
+  margin: 10px 0 0;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.grades {
+  /* Stays pinned to the bottom of the panel, so the buttons are reachable however long the answer is. */
+  position: sticky;
+  bottom: -20px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 -4px;
+  padding: 12px 4px 20px;
+  background: linear-gradient(to bottom, transparent, rgba(11, 13, 20, 0.96) 22%);
+}
+
+.grades + .detail-text-button {
+  margin-top: 0;
+}
+
+.grade {
+  display: grid;
+  gap: 1px;
+  justify-items: center;
+  padding: 9px 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  /* Solid, because a long answer can scroll underneath these buttons. */
+  background: #1a1d28;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.grade:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: #262a38;
+}
+
+.grade-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.grade-hint {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.grade-again .grade-label {
+  color: #ff9d8f;
+}
+
+.grade-easy .grade-label {
+  color: #8fe3b4;
+}
+
+.review-summary {
+  display: grid;
+  gap: 2px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-summary li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.review-summary-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-summary-next {
+  flex: none;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---- debug readout ----------------------------------------------------------- */
 
 .debug {
   position: absolute;
-  top: calc(var(--edge) + env(safe-area-inset-top, 0px));
-  right: calc(var(--edge) + env(safe-area-inset-right, 0px));
+  /* Sits above the timeline's row, clear of the detail panel on the right. */
+  bottom: calc(var(--edge) + 78px + env(safe-area-inset-bottom, 0px));
+  left: calc(var(--edge) + env(safe-area-inset-left, 0px));
   padding: 10px 14px;
   border-radius: 12px;
   font-variant-numeric: tabular-nums;
@@ -656,14 +1325,20 @@ button {
     padding: 8px;
   }
 
+  /* The side panel starts below the Clusters button. */
+  .detail {
+    top: calc(var(--edge) + 48px + env(safe-area-inset-top, 0px));
+    max-height: calc(100dvh - 2 * var(--edge) - 126px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    width: min(340px, 46vw);
+  }
+
   .legend-name {
     font-size: 14px;
   }
 
   .debug {
     top: calc(var(--edge) + 48px + env(safe-area-inset-top, 0px));
-    right: auto;
-    left: calc(var(--edge) + env(safe-area-inset-left, 0px));
+    bottom: auto;
     padding: 7px 11px;
     font-size: 12px;
   }
@@ -711,6 +1386,131 @@ button {
 @media (max-width: 600px) and (min-height: 521px) {
   .brand-sub {
     display: inline;
+  }
+}
+
+/* Mid-width screens: there is no room for the legend, the galaxy and the detail panel side by side,
+   so the legend steps aside while a node is open. */
+@media (min-width: 861px) and (max-width: 1180px) {
+  .legend {
+    transition: opacity 0.2s ease;
+  }
+
+  .ui.has-detail .legend {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.2s ease,
+      visibility 0s linear 0.2s;
+  }
+}
+
+/* Short, wide screens (a phone on its side): the panel takes the full height and the timeline steps aside. */
+@media (max-height: 520px) and (min-width: 701px) {
+  .detail {
+    max-height: calc(100dvh - 2 * var(--edge) - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  }
+
+  .ui.has-detail .timeline {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Phones: the detail panel is a bottom sheet, and the timeline makes way for it. */
+@media (max-width: 700px) {
+  .detail {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: min(56dvh, 480px);
+    max-height: none;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 22px 22px 0 0;
+    transform: translateY(40px);
+    background: rgba(11, 13, 20, 0.8);
+  }
+
+  /* Cards need more room than notes: the sheet grows while reviewing. */
+  .detail[data-view='review'],
+  .detail[data-view='reviewDone'] {
+    height: min(74dvh, 580px);
+  }
+
+  .detail-head {
+    padding: 14px 10px 0 18px;
+  }
+
+  .detail-head::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    width: 36px;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateX(-50%);
+  }
+
+  .detail-close {
+    width: 40px;
+    height: 40px;
+  }
+
+  .detail-body {
+    padding: 4px 18px 22px;
+  }
+
+  .detail-title {
+    font-size: 21px;
+  }
+
+  .detail-link {
+    padding: 9px 8px 9px 25px;
+  }
+
+  .segmented-option {
+    height: 32px;
+  }
+
+  .review-progress {
+    margin: 12px 0 6px;
+  }
+
+  .card {
+    min-height: 0;
+    padding: 14px 16px 16px;
+  }
+
+  .card-hint {
+    margin-top: 18px;
+  }
+
+  .grades,
+  .tour-nav {
+    bottom: -22px;
+    padding-bottom: 22px;
+  }
+
+  .timeline {
+    transition: opacity 0.2s ease;
+  }
+
+  .ui.has-detail .timeline {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.2s ease,
+      visibility 0s linear 0.2s;
   }
 }
 

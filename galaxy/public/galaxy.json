@@ -1,139 +1,1380 @@
 {
   "clusters": [
-    { "id": "calc",   "name": "Calculus",                      "color": "#4d8dff", "group": "School" },
-    { "id": "phys",   "name": "Physics",                       "color": "#8a63ff", "group": "School" },
-    { "id": "engr",   "name": "Engineering (ENGR 1110)",       "color": "#22d3ee", "group": "School" },
-    { "id": "engl",   "name": "English (ENGL 1120)",           "color": "#d58cff", "group": "School" },
-    { "id": "py",     "name": "Python (COMP 1220)",            "color": "#34e3a0", "group": "School" },
-    { "id": "design", "name": "Design (metronome portfolio)",  "color": "#b8c7ff", "group": "School" },
+    { "id": "calc",   "name": "Calculus",                     "color": "#4d8dff", "group": "School" },
+    { "id": "phys",   "name": "Physics",                      "color": "#8a63ff", "group": "School" },
+    { "id": "engr",   "name": "Engineering (ENGR 1110)",      "color": "#22d3ee", "group": "School" },
+    { "id": "engl",   "name": "English (ENGL 1120)",          "color": "#d58cff", "group": "School" },
+    { "id": "py",     "name": "Python (COMP 1220)",           "color": "#34e3a0", "group": "School" },
+    { "id": "design", "name": "Design (metronome portfolio)", "color": "#b8c7ff", "group": "School" },
 
-    { "id": "horm",   "name": "Hormones",                      "color": "#ff7a3d", "group": "Baseline" },
-    { "id": "sleep",  "name": "Sleep",                         "color": "#ff6fb5", "group": "Baseline" },
-    { "id": "train",  "name": "Training",                      "color": "#ff4a4a", "group": "Baseline" },
-    { "id": "nutr",   "name": "Nutrition",                     "color": "#b9f227", "group": "Baseline" },
-    { "id": "env",    "name": "Environment",                   "color": "#ffd60a", "group": "Baseline" },
-    { "id": "labs",   "name": "Bloodwork & Labs",              "color": "#ffb38a", "group": "Baseline" },
-    { "id": "pilot",  "name": "Pilot Cohort",                  "color": "#fff1c9", "group": "Baseline" }
+    { "id": "horm",   "name": "Hormones",                     "color": "#ff7a3d", "group": "Baseline" },
+    { "id": "sleep",  "name": "Sleep",                        "color": "#ff6fb5", "group": "Baseline" },
+    { "id": "train",  "name": "Training",                     "color": "#ff4a4a", "group": "Baseline" },
+    { "id": "nutr",   "name": "Nutrition",                    "color": "#b9f227", "group": "Baseline" },
+    { "id": "env",    "name": "Environment",                  "color": "#ffd60a", "group": "Baseline" },
+    { "id": "labs",   "name": "Bloodwork & Labs",             "color": "#ffb38a", "group": "Baseline" },
+    { "id": "pilot",  "name": "Pilot Cohort",                 "color": "#fff1c9", "group": "Baseline" }
   ],
 
   "nodes": [
-    { "id": "calc-limits",        "label": "Limits",                           "cluster": "calc", "date": "2026-08-19" },
-    { "id": "calc-derivatives",   "label": "Derivatives",                      "cluster": "calc", "date": "2026-09-02" },
-    { "id": "calc-chain",         "label": "Chain Rule",                       "cluster": "calc", "date": "2026-09-11" },
-    { "id": "calc-related",       "label": "Related Rates",                    "cluster": "calc", "date": "2026-09-21" },
-    { "id": "calc-optimization",  "label": "Optimization",                     "cluster": "calc", "date": "2026-09-30" },
-    { "id": "calc-integrals",     "label": "Integrals",                        "cluster": "calc", "date": "2026-10-09" },
-    { "id": "calc-ftc",           "label": "Fundamental Theorem of Calculus",  "cluster": "calc", "date": "2026-10-14" },
-    { "id": "calc-usub",          "label": "u-Substitution",                   "cluster": "calc", "date": "2026-10-23" },
-    { "id": "calc-partials",      "label": "Partial Derivatives",              "cluster": "calc", "date": "2026-11-04" },
-    { "id": "calc-multi",         "label": "Multiple Integrals",               "cluster": "calc", "date": "2026-11-13" },
+    {
+      "id": "calc-limits", "label": "Limits", "cluster": "calc", "date": "2026-08-19",
+      "overview": "A limit is the value a function approaches as its input gets close to a point, whether or not the function is defined there. Limits are the foundation for both derivatives and integrals.",
+      "points": [
+        "The left-hand and right-hand limits must agree for the limit to exist",
+        "Limits at infinity describe end behavior and horizontal asymptotes",
+        "Forms like 0/0 are indeterminate and need algebra or L'Hopital's rule"
+      ],
+      "cards": [
+        { "q": "What does it mean for the limit of f(x) as x approaches a to equal L?", "a": "f(x) gets as close to L as you like when x is close enough to a, from both sides." },
+        { "q": "When does a two-sided limit fail to exist?", "a": "When the left and right limits differ, or the function blows up or oscillates near the point." }
+      ]
+    },
+    {
+      "id": "calc-derivatives", "label": "Derivatives", "cluster": "calc", "date": "2026-09-02",
+      "overview": "The derivative measures how fast a function is changing at a single point. Geometrically it is the slope of the tangent line; physically it is an instantaneous rate such as velocity.",
+      "points": [
+        "Defined as the limit of the difference quotient as h goes to 0",
+        "Power rule: the derivative of x^n is n*x^(n-1)",
+        "Product and quotient rules handle combined functions",
+        "Where the derivative is zero, the function may have a maximum or minimum"
+      ],
+      "cards": [
+        { "q": "What is the limit definition of the derivative?", "a": "f'(x) is the limit as h goes to 0 of (f(x + h) - f(x)) / h." },
+        { "q": "What is the derivative of x^n?", "a": "n * x^(n-1), the power rule." },
+        { "q": "What does the sign of f'(x) tell you?", "a": "Positive means f is increasing there; negative means it is decreasing." }
+      ]
+    },
+    {
+      "id": "calc-chain", "label": "Chain Rule", "cluster": "calc", "date": "2026-09-11",
+      "overview": "The chain rule differentiates a function inside another function: take the derivative of the outside, leave the inside alone, then multiply by the derivative of the inside.",
+      "points": [
+        "If y = f(g(x)), then y' = f'(g(x)) * g'(x)",
+        "Work from the outermost function inward",
+        "It is the reason implicit differentiation and related rates work"
+      ],
+      "cards": [
+        { "q": "State the chain rule for y = f(g(x)).", "a": "y' = f'(g(x)) * g'(x)." },
+        { "q": "Differentiate sin(3x^2).", "a": "cos(3x^2) * 6x." }
+      ]
+    },
+    {
+      "id": "calc-related", "label": "Related Rates", "cluster": "calc", "date": "2026-09-21",
+      "overview": "Related rates problems connect how fast two or more quantities change over time. You write one equation linking the quantities, then differentiate both sides with respect to time.",
+      "points": [
+        "Draw the situation and name every changing quantity",
+        "Differentiate with respect to t using the chain rule",
+        "Plug in the numbers only after differentiating"
+      ],
+      "cards": [
+        { "q": "What is the most common mistake in related rates?", "a": "Substituting values before differentiating, which turns a changing quantity into a constant." },
+        { "q": "A circle's radius grows at 2 cm/s. How fast is the area growing when r = 5 cm?", "a": "dA/dt = 2*pi*r*dr/dt = 20*pi cm^2/s." }
+      ]
+    },
+    {
+      "id": "calc-optimization", "label": "Optimization", "cluster": "calc", "date": "2026-09-30",
+      "overview": "Optimization uses derivatives to find the largest or smallest value of a quantity under a constraint, like the least material for a given volume.",
+      "points": [
+        "Write the quantity to optimize as a function of one variable",
+        "Critical points are where the derivative is zero or undefined",
+        "Check endpoints as well as critical points on a closed interval",
+        "The second derivative tells a maximum from a minimum"
+      ],
+      "cards": [
+        { "q": "What are the steps of an optimization problem?", "a": "Write the objective, use the constraint to get one variable, differentiate, set to zero, then check which candidates are the max or min." },
+        { "q": "How does the second derivative test work?", "a": "At a critical point, f'' > 0 means a local minimum and f'' < 0 means a local maximum." }
+      ]
+    },
+    {
+      "id": "calc-integrals", "label": "Integrals", "cluster": "calc", "date": "2026-10-09",
+      "overview": "An integral adds up infinitely many thin slices. The definite integral gives the signed area under a curve; the indefinite integral is the family of antiderivatives.",
+      "points": [
+        "A definite integral is the limit of Riemann sums",
+        "Area below the x-axis counts as negative",
+        "Indefinite integrals always carry a constant of integration, + C"
+      ],
+      "cards": [
+        { "q": "What does the definite integral of f from a to b represent?", "a": "The signed area between the graph of f and the x-axis from a to b." },
+        { "q": "Why does an indefinite integral need + C?", "a": "Because any constant disappears when you differentiate, so every antiderivative differs by a constant." }
+      ]
+    },
+    {
+      "id": "calc-ftc", "label": "Fundamental Theorem of Calculus", "cluster": "calc", "date": "2026-10-14",
+      "overview": "The Fundamental Theorem of Calculus says differentiation and integration undo each other. It turns the hard problem of summing slices into the easier one of finding an antiderivative.",
+      "points": [
+        "Part 1: the derivative of the integral from a to x of f(t) dt is f(x)",
+        "Part 2: the integral from a to b of f equals F(b) - F(a), where F' = f",
+        "It links the area problem to the tangent problem"
+      ],
+      "cards": [
+        { "q": "State Part 2 of the Fundamental Theorem of Calculus.", "a": "If F is an antiderivative of f, the integral of f from a to b equals F(b) - F(a)." },
+        { "q": "What is the derivative of the integral from 0 to x of cos(t) dt?", "a": "cos(x), by Part 1." }
+      ]
+    },
+    {
+      "id": "calc-usub", "label": "u-Substitution", "cluster": "calc", "date": "2026-10-23",
+      "overview": "u-substitution is the chain rule run backwards. You pick an inside function u whose derivative also appears in the integrand, which turns the integral into a simpler one.",
+      "points": [
+        "Choose u as the inside function",
+        "Replace dx using du = u'(x) dx",
+        "For definite integrals, change the limits to u-values"
+      ],
+      "cards": [
+        { "q": "How do you choose u in a u-substitution?", "a": "Pick the inside function whose derivative, up to a constant, is also in the integrand." },
+        { "q": "Integrate 2x * cos(x^2) dx.", "a": "Let u = x^2, du = 2x dx. The result is sin(x^2) + C." }
+      ]
+    },
+    {
+      "id": "calc-partials", "label": "Partial Derivatives", "cluster": "calc", "date": "2026-11-04",
+      "overview": "A partial derivative measures how a function of several variables changes when one input changes and the others are held fixed.",
+      "points": [
+        "Treat every other variable as a constant",
+        "The gradient collects all the partial derivatives into a vector",
+        "The gradient points in the direction of steepest increase"
+      ],
+      "cards": [
+        { "q": "How do you take the partial derivative with respect to x?", "a": "Differentiate with respect to x while treating all other variables as constants." },
+        { "q": "What does the gradient of f tell you?", "a": "The direction in which f increases fastest, and how steep that increase is." }
+      ]
+    },
+    {
+      "id": "calc-multi", "label": "Multiple Integrals", "cluster": "calc", "date": "2026-11-13",
+      "overview": "Double and triple integrals add up a quantity over a region of the plane or of space, such as volume under a surface or the mass of an object with varying density.",
+      "points": [
+        "Evaluate as iterated integrals, one variable at a time",
+        "The order of integration can often be swapped (Fubini's theorem)",
+        "Polar coordinates simplify circular regions: dA = r dr d(theta)"
+      ],
+      "cards": [
+        { "q": "What does a double integral of f over a region R compute?", "a": "The volume under the surface z = f(x, y) above R, counted with sign." },
+        { "q": "What is the area element in polar coordinates?", "a": "dA = r dr d(theta)." }
+      ]
+    },
 
-    { "id": "phys-vectors",       "label": "Vectors",                          "cluster": "phys", "date": "2026-08-20" },
-    { "id": "phys-kinematics",    "label": "Kinematics",                       "cluster": "phys", "date": "2026-08-28" },
-    { "id": "phys-projectile",    "label": "Projectile Motion",                "cluster": "phys", "date": "2026-09-08" },
-    { "id": "phys-newton",        "label": "Newton's Laws",                    "cluster": "phys", "date": "2026-09-17" },
-    { "id": "phys-energy",        "label": "Work & Energy",                    "cluster": "phys", "date": "2026-10-01" },
-    { "id": "phys-momentum",      "label": "Momentum & Collisions",            "cluster": "phys", "date": "2026-10-12" },
-    { "id": "phys-rotation",      "label": "Rotational Motion",                "cluster": "phys", "date": "2026-10-22" },
-    { "id": "phys-torque",        "label": "Torque",                           "cluster": "phys", "date": "2026-10-29" },
-    { "id": "phys-shm",           "label": "Simple Harmonic Motion",           "cluster": "phys", "date": "2026-11-09" },
-    { "id": "phys-gravity",       "label": "Gravitation & Orbits",             "cluster": "phys", "date": "2026-11-16" },
+    {
+      "id": "phys-vectors", "label": "Vectors", "cluster": "phys", "date": "2026-08-20",
+      "overview": "Vectors have both size and direction. Most of mechanics is done by breaking vectors into components along chosen axes and working with each axis separately.",
+      "points": [
+        "Components: Ax = A cos(theta), Ay = A sin(theta)",
+        "Add vectors by adding their components",
+        "The dot product gives a scalar; the cross product gives a perpendicular vector"
+      ],
+      "cards": [
+        { "q": "How do you add two vectors?", "a": "Add their x-components and their y-components separately." },
+        { "q": "What does the dot product of two perpendicular vectors equal?", "a": "Zero." }
+      ]
+    },
+    {
+      "id": "phys-kinematics", "label": "Kinematics", "cluster": "phys", "date": "2026-08-28",
+      "overview": "Kinematics describes motion without asking what causes it. Position, velocity and acceleration are linked by derivatives, and for constant acceleration by a small set of equations.",
+      "points": [
+        "Velocity is the derivative of position; acceleration is the derivative of velocity",
+        "v = v0 + a*t",
+        "x = x0 + v0*t + (1/2)*a*t^2",
+        "v^2 = v0^2 + 2*a*(x - x0)"
+      ],
+      "cards": [
+        { "q": "Which kinematic equation does not involve time?", "a": "v^2 = v0^2 + 2*a*(x - x0)." },
+        { "q": "How are position, velocity and acceleration related?", "a": "Velocity is the time derivative of position, and acceleration is the time derivative of velocity." }
+      ]
+    },
+    {
+      "id": "phys-projectile", "label": "Projectile Motion", "cluster": "phys", "date": "2026-09-08",
+      "overview": "A projectile moves under gravity alone. Its horizontal and vertical motions are independent: constant velocity sideways, constant acceleration downward.",
+      "points": [
+        "Horizontal: ax = 0, so vx stays constant",
+        "Vertical: ay = -g, about 9.8 m/s^2 downward",
+        "On level ground, range is greatest at a 45 degree launch angle",
+        "The path is a parabola"
+      ],
+      "cards": [
+        { "q": "What is the horizontal acceleration of a projectile, ignoring air resistance?", "a": "Zero. The horizontal velocity stays constant." },
+        { "q": "At the top of its path, what are a projectile's velocity and acceleration?", "a": "The vertical velocity is zero, the horizontal velocity is unchanged, and the acceleration is still g downward." }
+      ]
+    },
+    {
+      "id": "phys-newton", "label": "Newton's Laws", "cluster": "phys", "date": "2026-09-17",
+      "overview": "Newton's three laws connect forces to motion. They are the core model for everything from blocks on ramps to aircraft in flight.",
+      "points": [
+        "First law: with no net force, velocity does not change",
+        "Second law: net force equals mass times acceleration",
+        "Third law: forces come in equal and opposite pairs on different objects"
+      ],
+      "cards": [
+        { "q": "State Newton's second law.", "a": "The net force on an object equals its mass times its acceleration: F = m*a." },
+        { "q": "Why don't action-reaction pairs cancel?", "a": "Because the two forces act on different objects." }
+      ]
+    },
+    {
+      "id": "phys-energy", "label": "Work & Energy", "cluster": "phys", "date": "2026-10-01",
+      "overview": "Work is energy transferred by a force acting over a distance. Tracking energy instead of forces often makes a problem much shorter.",
+      "points": [
+        "Work: W = F*d*cos(theta)",
+        "Kinetic energy: K = (1/2)*m*v^2",
+        "Work-energy theorem: net work equals the change in kinetic energy",
+        "Mechanical energy is conserved when only conservative forces do work"
+      ],
+      "cards": [
+        { "q": "State the work-energy theorem.", "a": "The net work done on an object equals its change in kinetic energy." },
+        { "q": "When is mechanical energy conserved?", "a": "When only conservative forces, like gravity and ideal springs, do work." }
+      ]
+    },
+    {
+      "id": "phys-momentum", "label": "Momentum & Collisions", "cluster": "phys", "date": "2026-10-12",
+      "overview": "Momentum is mass times velocity. In a collision the total momentum of an isolated system stays the same, even when kinetic energy does not.",
+      "points": [
+        "p = m*v, a vector",
+        "Impulse equals the change in momentum: F*dt = dp",
+        "Elastic collisions conserve kinetic energy; inelastic ones do not"
+      ],
+      "cards": [
+        { "q": "What is conserved in every collision of an isolated system?", "a": "Total momentum." },
+        { "q": "What separates an elastic from an inelastic collision?", "a": "Kinetic energy is conserved in an elastic collision and partly lost in an inelastic one." }
+      ]
+    },
+    {
+      "id": "phys-rotation", "label": "Rotational Motion", "cluster": "phys", "date": "2026-10-22",
+      "overview": "Rotational motion mirrors linear motion: angle replaces position, angular velocity replaces velocity, and moment of inertia replaces mass.",
+      "points": [
+        "Angular velocity omega = d(theta)/dt, and v = r*omega",
+        "Moment of inertia depends on how mass is spread around the axis",
+        "Rotational kinetic energy: K = (1/2)*I*omega^2"
+      ],
+      "cards": [
+        { "q": "What plays the role of mass in rotation?", "a": "The moment of inertia, I." },
+        { "q": "How is linear speed related to angular speed?", "a": "v = r * omega, where r is the distance from the axis." }
+      ]
+    },
+    {
+      "id": "phys-torque", "label": "Torque", "cluster": "phys", "date": "2026-10-29",
+      "overview": "Torque is the turning effect of a force. It depends on the size of the force, how far from the axis it acts, and the angle it makes.",
+      "points": [
+        "tau = r*F*sin(theta)",
+        "Net torque equals moment of inertia times angular acceleration",
+        "An object in static equilibrium has zero net force and zero net torque"
+      ],
+      "cards": [
+        { "q": "What is the formula for torque?", "a": "tau = r * F * sin(theta), with r the distance from the axis to where the force acts." },
+        { "q": "What are the two conditions for static equilibrium?", "a": "The net force is zero and the net torque is zero." }
+      ]
+    },
+    {
+      "id": "phys-shm", "label": "Simple Harmonic Motion", "cluster": "phys", "date": "2026-11-09",
+      "overview": "Simple harmonic motion is the back-and-forth motion that happens when the restoring force is proportional to displacement, as with a spring or a small-angle pendulum.",
+      "points": [
+        "Restoring force: F = -k*x",
+        "Spring period: T = 2*pi*sqrt(m/k)",
+        "Pendulum period: T = 2*pi*sqrt(L/g), independent of mass",
+        "Energy trades between kinetic and potential"
+      ],
+      "cards": [
+        { "q": "What sets the period of a simple pendulum?", "a": "Its length and g: T = 2*pi*sqrt(L/g). Mass and small amplitudes do not matter." },
+        { "q": "What defines simple harmonic motion?", "a": "A restoring force proportional to displacement and pointing back toward equilibrium." }
+      ]
+    },
+    {
+      "id": "phys-gravity", "label": "Gravitation & Orbits", "cluster": "phys", "date": "2026-11-16",
+      "overview": "Newton's law of gravitation says every pair of masses attracts with a force that falls off with the square of the distance. It explains both falling objects and orbits.",
+      "points": [
+        "F = G*m1*m2 / r^2",
+        "For a circular orbit, gravity supplies the centripetal force",
+        "Orbital speed: v = sqrt(G*M / r)",
+        "Kepler's third law: T^2 is proportional to r^3"
+      ],
+      "cards": [
+        { "q": "How does gravitational force change if the distance doubles?", "a": "It drops to one quarter, because force goes as 1/r^2." },
+        { "q": "What keeps a satellite in a circular orbit?", "a": "Gravity, acting as the centripetal force." }
+      ]
+    },
 
-    { "id": "engr-process",       "label": "Engineering Design Process",       "cluster": "engr", "date": "2026-08-18" },
-    { "id": "engr-teamwork",      "label": "Team Roles & Charters",            "cluster": "engr", "date": "2026-08-25" },
-    { "id": "engr-units",         "label": "Units & Dimensional Analysis",     "cluster": "engr", "date": "2026-09-03" },
-    { "id": "engr-cad",           "label": "CAD Basics (SolidWorks)",          "cluster": "engr", "date": "2026-09-15" },
-    { "id": "engr-fbd",           "label": "Free-Body Diagrams",               "cluster": "engr", "date": "2026-09-24" },
-    { "id": "engr-aero",          "label": "Lift, Drag & Airfoils",            "cluster": "engr", "date": "2026-10-06" },
-    { "id": "engr-ethics",        "label": "Engineering Ethics",               "cluster": "engr", "date": "2026-10-20" },
-    { "id": "engr-report",        "label": "Technical Reports",                "cluster": "engr", "date": "2026-11-02" },
-    { "id": "engr-review",        "label": "Design Review Presentation",       "cluster": "engr", "date": "2026-11-12" },
+    {
+      "id": "engr-process", "label": "Engineering Design Process", "cluster": "engr", "date": "2026-08-18",
+      "overview": "The engineering design process is a loop, not a straight line: define the problem, research, brainstorm, prototype, test, and improve until the design meets its requirements.",
+      "points": [
+        "Start from the user's need and measurable requirements",
+        "Generate several concepts before choosing one",
+        "Test early, and expect to iterate"
+      ],
+      "cards": [
+        { "q": "Name the main stages of the engineering design process.", "a": "Define the problem, research, generate concepts, select, prototype, test, and iterate." },
+        { "q": "Why iterate instead of building the first idea?", "a": "Testing reveals problems early, when they are cheap to fix." }
+      ]
+    },
+    {
+      "id": "engr-teamwork", "label": "Team Roles & Charters", "cluster": "engr", "date": "2026-08-25",
+      "overview": "A team charter writes down roles, expectations and how the team makes decisions, before the pressure of deadlines arrives.",
+      "points": [
+        "Typical roles: lead, recorder, scheduler, quality checker",
+        "Agree on how to communicate and how to handle missed work",
+        "Rotate roles so everyone practices each one"
+      ]
+    },
+    {
+      "id": "engr-units", "label": "Units & Dimensional Analysis", "cluster": "engr", "date": "2026-09-03",
+      "overview": "Dimensional analysis treats units as algebra. Carrying units through every step catches most calculation mistakes before they matter.",
+      "points": [
+        "Every equation must be dimensionally consistent",
+        "Convert by multiplying by factors equal to one",
+        "Know both SI and US customary units"
+      ],
+      "cards": [
+        { "q": "What is the quickest check on a formula you are unsure of?", "a": "Check that the units on both sides match." },
+        { "q": "Convert 60 miles per hour to feet per second.", "a": "88 ft/s." }
+      ]
+    },
+    {
+      "id": "engr-cad", "label": "CAD Basics (SolidWorks)", "cluster": "engr", "date": "2026-09-15",
+      "overview": "CAD builds 3D parts from 2D sketches. A good model is fully defined and captures design intent, so it updates cleanly when a dimension changes.",
+      "points": [
+        "Sketch on a plane, then extrude, revolve or cut",
+        "Fully define sketches with dimensions and relations",
+        "Parts combine into assemblies using mates"
+      ],
+      "cards": [
+        { "q": "What does a fully defined sketch mean?", "a": "Every size and position is fixed by a dimension or relation, so nothing can move by accident." },
+        { "q": "What is design intent in CAD?", "a": "Building the model so that it changes the way you want when a dimension is edited." }
+      ]
+    },
+    {
+      "id": "engr-fbd", "label": "Free-Body Diagrams", "cluster": "engr", "date": "2026-09-24",
+      "overview": "A free-body diagram isolates one object and shows every external force acting on it. It is the first step in almost any statics or dynamics problem.",
+      "points": [
+        "Draw only forces acting ON the object",
+        "Include weight, normal force, friction, tension and applied loads",
+        "Choose axes that make the components simple"
+      ],
+      "cards": [
+        { "q": "What belongs on a free-body diagram?", "a": "Only the external forces acting on the chosen object, drawn at their points of action." },
+        { "q": "What is a common free-body diagram error?", "a": "Including forces the object exerts on other things, or inventing a force of motion." }
+      ]
+    },
+    {
+      "id": "engr-aero", "label": "Lift, Drag & Airfoils", "cluster": "engr", "date": "2026-10-06",
+      "overview": "A wing produces lift by turning the airflow downward, and pays for it in drag. Lift and drag both grow with air density, the square of speed, and wing area.",
+      "points": [
+        "Lift: L = (1/2)*rho*v^2*S*CL",
+        "Drag: D = (1/2)*rho*v^2*S*CD",
+        "Lift coefficient rises with angle of attack until the wing stalls",
+        "In steady level flight, lift equals weight and thrust equals drag"
+      ],
+      "cards": [
+        { "q": "What happens to lift if airspeed doubles?", "a": "It roughly quadruples, because lift goes with the square of speed." },
+        { "q": "What is a stall?", "a": "The loss of lift when the angle of attack is too high and the airflow separates from the wing." }
+      ]
+    },
+    {
+      "id": "engr-ethics", "label": "Engineering Ethics", "cluster": "engr", "date": "2026-10-20",
+      "overview": "Engineering ethics puts public safety, health and welfare first. Professional codes guide what to do when cost, schedule and safety pull in different directions.",
+      "points": [
+        "The public's safety comes before the employer's interest",
+        "Only do work you are competent to do",
+        "Be honest about data, limits and risks"
+      ],
+      "cards": [
+        { "q": "What is the first duty in most engineering codes of ethics?", "a": "To hold paramount the safety, health and welfare of the public." },
+        { "q": "What should an engineer do when asked to sign off on work outside their expertise?", "a": "Decline, or bring in someone qualified." }
+      ]
+    },
+    {
+      "id": "engr-report", "label": "Technical Reports", "cluster": "engr", "date": "2026-11-02",
+      "overview": "A technical report lets a busy reader find the result fast and check how you got it. Structure and clear figures matter as much as the content.",
+      "points": [
+        "Typical order: summary, introduction, methods, results, discussion, conclusion",
+        "Put the main result in the summary",
+        "Every figure and table needs a number, a caption and a mention in the text"
+      ],
+      "cards": [
+        { "q": "What goes in an executive summary?", "a": "The problem, what was done, the main results and the recommendation, short enough to stand alone." },
+        { "q": "What must every figure in a report have?", "a": "A number, a caption, and a reference to it in the text." }
+      ]
+    },
+    {
+      "id": "engr-review", "label": "Design Review Presentation", "cluster": "engr", "date": "2026-11-12",
+      "overview": "A design review presents the design to people outside the team so they can find problems while changes are still cheap.",
+      "points": [
+        "State the requirements, then show how the design meets them",
+        "Show the evidence: calculations, tests and prototypes",
+        "Name the open risks and the next steps"
+      ],
+      "cards": [
+        { "q": "What is the purpose of a design review?", "a": "To get outside eyes on the design and catch problems before more time and money are spent." }
+      ]
+    },
 
-    { "id": "engl-rhetoric",      "label": "Rhetorical Analysis",              "cluster": "engl", "date": "2026-08-24" },
-    { "id": "engl-thesis",        "label": "Thesis Statements",                "cluster": "engl", "date": "2026-09-01" },
-    { "id": "engl-sources",       "label": "Evaluating Sources",               "cluster": "engl", "date": "2026-09-14" },
-    { "id": "engl-annotated",     "label": "Annotated Bibliography",           "cluster": "engl", "date": "2026-09-28" },
-    { "id": "engl-argument",      "label": "Argumentative Essay",              "cluster": "engl", "date": "2026-10-13" },
-    { "id": "engl-mla",           "label": "MLA Citations",                    "cluster": "engl", "date": "2026-10-19" },
-    { "id": "engl-peer",          "label": "Peer Review",                      "cluster": "engl", "date": "2026-10-30" },
-    { "id": "engl-research",      "label": "Research Paper",                   "cluster": "engl", "date": "2026-11-10" },
+    {
+      "id": "engl-rhetoric", "label": "Rhetorical Analysis", "cluster": "engl", "date": "2026-08-24",
+      "overview": "Rhetorical analysis looks at how a text persuades, not only at what it says: who is speaking, to whom, for what purpose, and with which appeals.",
+      "points": [
+        "Ethos: the writer's credibility",
+        "Pathos: appeals to emotion",
+        "Logos: reasoning and evidence",
+        "Consider audience, purpose and context together"
+      ],
+      "cards": [
+        { "q": "What are the three classical rhetorical appeals?", "a": "Ethos (credibility), pathos (emotion) and logos (logic)." },
+        { "q": "What does a rhetorical analysis evaluate?", "a": "How effectively a text persuades its audience, not whether you agree with it." }
+      ]
+    },
+    {
+      "id": "engl-thesis", "label": "Thesis Statements", "cluster": "engl", "date": "2026-09-01",
+      "overview": "A thesis statement is the one-sentence claim the whole essay defends. A good one is specific, arguable, and narrow enough to prove in the space available.",
+      "points": [
+        "Takes a position someone could disagree with",
+        "Previews the main reasons",
+        "Usually sits at the end of the introduction"
+      ],
+      "cards": [
+        { "q": "What makes a thesis arguable?", "a": "A reasonable reader could disagree with it, so it needs evidence to defend." },
+        { "q": "What is wrong with a thesis that states a fact?", "a": "There is nothing to argue, so the essay has no purpose." }
+      ]
+    },
+    {
+      "id": "engl-sources", "label": "Evaluating Sources", "cluster": "engl", "date": "2026-09-14",
+      "overview": "Evaluating sources means deciding how much to trust what you read. Check who wrote it, why, how current it is, and whether others confirm it.",
+      "points": [
+        "Authority: who is the author and what are their credentials?",
+        "Purpose: to inform, to sell or to persuade?",
+        "Peer-reviewed research carries more weight than opinion pieces",
+        "Read laterally: see what other sources say about this one"
+      ],
+      "cards": [
+        { "q": "What is lateral reading?", "a": "Leaving a source to check what other reliable sources say about it." },
+        { "q": "Name four things to check when evaluating a source.", "a": "Authority, accuracy, currency and purpose." }
+      ]
+    },
+    {
+      "id": "engl-annotated", "label": "Annotated Bibliography", "cluster": "engl", "date": "2026-09-28",
+      "overview": "An annotated bibliography lists each source in full citation form, followed by a short paragraph that summarizes it and judges how useful it is.",
+      "points": [
+        "Citation first, in the required style",
+        "Summarize the argument in a few sentences",
+        "Evaluate credibility and explain how you will use it"
+      ],
+      "cards": [
+        { "q": "What are the three parts of an annotation?", "a": "A summary of the source, an evaluation of it, and a note on how it fits your project." }
+      ]
+    },
+    {
+      "id": "engl-argument", "label": "Argumentative Essay", "cluster": "engl", "date": "2026-10-13",
+      "overview": "An argumentative essay makes a claim and supports it with reasons and evidence, while fairly answering the strongest objections.",
+      "points": [
+        "Claim, reasons, evidence",
+        "Address a counterargument and respond to it",
+        "Each paragraph should advance one reason"
+      ],
+      "cards": [
+        { "q": "Why include a counterargument?", "a": "Answering the strongest objection shows fairness and makes your own claim more convincing." },
+        { "q": "What is the difference between a reason and evidence?", "a": "A reason explains why the claim is true; evidence is the data or source that backs the reason." }
+      ]
+    },
+    {
+      "id": "engl-mla", "label": "MLA Citations", "cluster": "engl", "date": "2026-10-19",
+      "overview": "MLA style gives credit to sources with short in-text citations that point to full entries on a Works Cited page.",
+      "points": [
+        "In-text: author's last name and page number",
+        "Works Cited entries are alphabetical with a hanging indent",
+        "Cite paraphrases as well as direct quotations"
+      ],
+      "cards": [
+        { "q": "What goes in a basic MLA in-text citation?", "a": "The author's last name and the page number, in parentheses." },
+        { "q": "Do you need to cite a paraphrase?", "a": "Yes. Ideas taken from a source need a citation even in your own words." }
+      ]
+    },
+    {
+      "id": "engl-peer", "label": "Peer Review", "cluster": "engl", "date": "2026-10-30",
+      "overview": "Peer review is giving and getting feedback on a draft. The most useful comments are specific, focused on the big issues first, and suggest a way forward.",
+      "points": [
+        "Start with thesis and structure before sentence-level edits",
+        "Point to a specific place and explain the effect on you as a reader",
+        "As the writer, decide which feedback to act on"
+      ]
+    },
+    {
+      "id": "engl-research", "label": "Research Paper", "cluster": "engl", "date": "2026-11-10",
+      "overview": "A research paper answers a focused question by bringing sources into conversation with each other and with your own argument.",
+      "points": [
+        "Narrow the topic to a question you can answer",
+        "Synthesize sources instead of summarizing them one by one",
+        "Your voice and claim should lead; sources support"
+      ],
+      "cards": [
+        { "q": "What is synthesis in a research paper?", "a": "Combining several sources to make a point of your own, instead of summarizing each one separately." },
+        { "q": "What makes a good research question?", "a": "It is focused, open to debate, and answerable with the sources and time you have." }
+      ]
+    },
 
-    { "id": "py-variables",       "label": "Variables & Types",                "cluster": "py", "date": "2026-08-21" },
-    { "id": "py-control",         "label": "Conditionals & Loops",             "cluster": "py", "date": "2026-09-01" },
-    { "id": "py-functions",       "label": "Functions",                        "cluster": "py", "date": "2026-09-10" },
-    { "id": "py-lists",           "label": "Lists & Dictionaries",             "cluster": "py", "date": "2026-09-22" },
-    { "id": "py-files",           "label": "File I/O & CSV",                   "cluster": "py", "date": "2026-10-05" },
-    { "id": "py-classes",         "label": "Classes & Objects",                "cluster": "py", "date": "2026-10-16" },
-    { "id": "py-numpy",           "label": "NumPy Arrays",                     "cluster": "py", "date": "2026-10-27" },
-    { "id": "py-plots",           "label": "Plotting with Matplotlib",         "cluster": "py", "date": "2026-11-05" },
-    { "id": "py-pandas",          "label": "pandas DataFrames",                "cluster": "py", "date": "2026-11-11" },
+    {
+      "id": "py-variables", "label": "Variables & Types", "cluster": "py", "date": "2026-08-21",
+      "overview": "A variable is a name that points to a value. Every value has a type, which decides what you can do with it.",
+      "points": [
+        "Common types: int, float, str, bool",
+        "Python works out the type from the value",
+        "Convert between types with int(), float() and str()"
+      ],
+      "cards": [
+        { "q": "What is the difference between 7 / 2 and 7 // 2 in Python?", "a": "7 / 2 is 3.5 (true division); 7 // 2 is 3 (floor division)." },
+        { "q": "What type does input() return?", "a": "A string, so numbers have to be converted." }
+      ]
+    },
+    {
+      "id": "py-control", "label": "Conditionals & Loops", "cluster": "py", "date": "2026-09-01",
+      "overview": "Conditionals choose which code runs; loops repeat code. Together they let a program make decisions and handle any amount of data.",
+      "points": [
+        "if / elif / else pick one branch",
+        "for loops run once per item; while loops run until a condition fails",
+        "break leaves a loop early; continue skips to the next pass"
+      ],
+      "cards": [
+        { "q": "When should you use a while loop instead of a for loop?", "a": "When you do not know in advance how many times it has to repeat." },
+        { "q": "What does range(5) produce?", "a": "The numbers 0, 1, 2, 3, 4." }
+      ]
+    },
+    {
+      "id": "py-functions", "label": "Functions", "cluster": "py", "date": "2026-09-10",
+      "overview": "A function packages a piece of work under a name so it can be reused and tested. Inputs come in as parameters and the result goes out with return.",
+      "points": [
+        "Define with def name(parameters):",
+        "return sends a value back; without it the function returns None",
+        "Variables created inside a function are local to it"
+      ],
+      "cards": [
+        { "q": "What is the difference between print and return?", "a": "print shows a value on screen; return hands it back to the code that called the function." },
+        { "q": "What does a function return if it has no return statement?", "a": "None." }
+      ]
+    },
+    {
+      "id": "py-lists", "label": "Lists & Dictionaries", "cluster": "py", "date": "2026-09-22",
+      "overview": "Lists hold items in order; dictionaries map keys to values. Picking the right one makes code both shorter and faster.",
+      "points": [
+        "Lists are indexed from 0 and can be sliced",
+        "Dictionaries look up values by key",
+        "Both are mutable: they can be changed in place"
+      ],
+      "cards": [
+        { "q": "How do you get the last item of a list called items?", "a": "items[-1]." },
+        { "q": "When is a dictionary better than a list?", "a": "When you need to look things up by a name or key instead of by position." }
+      ]
+    },
+    {
+      "id": "py-files", "label": "File I/O & CSV", "cluster": "py", "date": "2026-10-05",
+      "overview": "File I/O lets a program keep data between runs. CSV files store tables as plain text, one row per line, which makes them easy to share with spreadsheets.",
+      "points": [
+        "Use with open(...) so the file closes on its own",
+        "Modes: 'r' to read, 'w' to overwrite, 'a' to append",
+        "The csv module handles commas and quotes for you"
+      ],
+      "cards": [
+        { "q": "Why open files with a with statement?", "a": "The file is closed automatically, even if an error happens." },
+        { "q": "What does opening a file in 'w' mode do to its old contents?", "a": "It erases them." }
+      ]
+    },
+    {
+      "id": "py-classes", "label": "Classes & Objects", "cluster": "py", "date": "2026-10-16",
+      "overview": "A class is a blueprint for objects that bundle data with the functions that work on it. Classes keep larger programs organized.",
+      "points": [
+        "__init__ sets up a new object's attributes",
+        "self refers to the object the method was called on",
+        "Inheritance lets one class build on another"
+      ],
+      "cards": [
+        { "q": "What is self in a method?", "a": "The specific object the method is being called on." },
+        { "q": "What is the job of __init__?", "a": "To set the starting attributes when a new object is created." }
+      ]
+    },
+    {
+      "id": "py-numpy", "label": "NumPy Arrays", "cluster": "py", "date": "2026-10-27",
+      "overview": "NumPy arrays store numbers in a compact grid and apply operations to every element at once, which is far faster than looping in plain Python.",
+      "points": [
+        "Arithmetic on arrays is element by element",
+        "Arrays have a fixed type and a shape",
+        "Use slicing and boolean masks to pick out data"
+      ],
+      "cards": [
+        { "q": "What is vectorization?", "a": "Applying an operation to a whole array at once instead of looping over its elements." },
+        { "q": "What does a.shape tell you?", "a": "The size of the array along each dimension." }
+      ]
+    },
+    {
+      "id": "py-plots", "label": "Plotting with Matplotlib", "cluster": "py", "date": "2026-11-05",
+      "overview": "Matplotlib turns arrays into charts. A clear plot has labeled axes, units, a title and a legend when there is more than one line.",
+      "points": [
+        "plt.plot(x, y) for lines; plt.scatter for points",
+        "Always label axes and include units",
+        "plt.savefig writes the figure to a file"
+      ],
+      "cards": [
+        { "q": "What three things should every plot have?", "a": "Labeled axes with units, a title, and a legend if there is more than one series." },
+        { "q": "Which call draws a basic line chart?", "a": "plt.plot(x, y), followed by plt.show()." }
+      ]
+    },
+    {
+      "id": "py-pandas", "label": "pandas DataFrames", "cluster": "py", "date": "2026-11-11",
+      "overview": "A pandas DataFrame is a table with named columns. It makes loading, filtering, grouping and summarizing real data a few lines of code.",
+      "points": [
+        "pd.read_csv loads a file into a DataFrame",
+        "Select a column with df['name']; filter rows with a condition",
+        "groupby splits the data, applies a function and combines the results"
+      ],
+      "cards": [
+        { "q": "How do you load a CSV file into pandas?", "a": "pd.read_csv('file.csv')." },
+        { "q": "What does df.groupby('week')['sleep'].mean() do?", "a": "It gives the average of the sleep column for each week." }
+      ]
+    },
 
-    { "id": "design-brief",       "label": "Metronome Design Brief",           "cluster": "design", "date": "2026-09-04" },
-    { "id": "design-sketches",    "label": "Concept Sketches",                 "cluster": "design", "date": "2026-09-12" },
-    { "id": "design-pendulum",    "label": "Pendulum Mechanism",               "cluster": "design", "date": "2026-09-25" },
-    { "id": "design-tempo",       "label": "Tempo Calibration (BPM)",          "cluster": "design", "date": "2026-10-07" },
-    { "id": "design-cad",         "label": "Metronome CAD Model",              "cluster": "design", "date": "2026-10-15" },
-    { "id": "design-print",       "label": "3D-Printed Prototype",             "cluster": "design", "date": "2026-10-28" },
-    { "id": "design-portfolio",   "label": "Portfolio Layout",                 "cluster": "design", "date": "2026-11-06" },
-    { "id": "design-renders",     "label": "Product Renders",                  "cluster": "design", "date": "2026-11-15" },
+    {
+      "id": "design-brief", "label": "Metronome Design Brief", "cluster": "design", "date": "2026-09-04",
+      "overview": "The design brief sets out what the metronome has to do, who it is for, and the limits on size, cost and time. Every later decision is checked against it.",
+      "points": [
+        "Problem statement and target user",
+        "Requirements that can be measured, such as the tempo range",
+        "Constraints: budget, materials, deadline"
+      ],
+      "cards": [
+        { "q": "What is a design brief for?", "a": "To pin down the problem, the user, the requirements and the constraints before designing anything." }
+      ]
+    },
+    {
+      "id": "design-sketches", "label": "Concept Sketches", "cluster": "design", "date": "2026-09-12",
+      "overview": "Concept sketches explore many possible forms quickly and cheaply. Quantity matters more than polish at this stage.",
+      "points": [
+        "Sketch several different directions, not variations of one",
+        "Annotate with notes about function and materials",
+        "Pick a direction by comparing against the brief"
+      ]
+    },
+    {
+      "id": "design-pendulum", "label": "Pendulum Mechanism", "cluster": "design", "date": "2026-09-25",
+      "overview": "A mechanical metronome keeps time with an inverted pendulum: a rod with a sliding weight above the pivot and a fixed weight below. Moving the top weight up slows the beat.",
+      "points": [
+        "Sliding the weight away from the pivot lengthens the period",
+        "An escapement gives a small push each swing to replace lost energy",
+        "The click comes from the escapement, once per beat"
+      ],
+      "cards": [
+        { "q": "How does moving the sliding weight up change the tempo?", "a": "It slows it down, because the pendulum's period gets longer." },
+        { "q": "What does the escapement do?", "a": "It feeds a little energy from the spring into each swing and makes the click." }
+      ]
+    },
+    {
+      "id": "design-tempo", "label": "Tempo Calibration (BPM)", "cluster": "design", "date": "2026-10-07",
+      "overview": "Tempo is measured in beats per minute. Calibrating the metronome means marking where the weight has to sit for each tempo and checking it against a reference.",
+      "points": [
+        "Period in seconds = 60 / BPM",
+        "Typical range is about 40 to 208 BPM",
+        "Check against a timer or tuner app over many beats"
+      ],
+      "cards": [
+        { "q": "What is the time between beats at 120 BPM?", "a": "0.5 seconds." },
+        { "q": "Why time many beats instead of one?", "a": "Averaging over many beats makes the timing error much smaller." }
+      ]
+    },
+    {
+      "id": "design-cad", "label": "Metronome CAD Model", "cluster": "design", "date": "2026-10-15",
+      "overview": "The CAD model defines every part of the metronome and how the parts fit together, so problems show up on screen instead of in the workshop.",
+      "points": [
+        "Model each part, then build the assembly",
+        "Check clearances and the pendulum's range of motion",
+        "Drawings come from the model, with dimensions"
+      ],
+      "cards": [
+        { "q": "Why model the full assembly and not only the parts?", "a": "To check that parts fit and move without colliding before anything is made." }
+      ]
+    },
+    {
+      "id": "design-print", "label": "3D-Printed Prototype", "cluster": "design", "date": "2026-10-28",
+      "overview": "A 3D-printed prototype turns the model into something you can hold and test. The first print is for learning, not for looks.",
+      "points": [
+        "Print orientation affects strength and surface finish",
+        "Leave clearance between moving parts",
+        "Write down what failed and feed it back into the model"
+      ],
+      "cards": [
+        { "q": "Why does print orientation matter?", "a": "Printed parts are weakest between layers, and orientation also changes surface quality and the need for supports." },
+        { "q": "What is the point of a first prototype?", "a": "To find out what does not work while it is still cheap to change." }
+      ]
+    },
+    {
+      "id": "design-portfolio", "label": "Portfolio Layout", "cluster": "design", "date": "2026-11-06",
+      "overview": "The portfolio tells the story of the project from problem to result. It shows the thinking and the iterations, not only the finished object.",
+      "points": [
+        "Lead with the problem and the final result",
+        "Show process: sketches, models, failed prints, fixes",
+        "Keep the layout consistent and the captions short"
+      ],
+      "cards": [
+        { "q": "What should a design portfolio page show besides the final product?", "a": "The process: the problem, the options considered, the testing and what changed as a result." }
+      ]
+    },
+    {
+      "id": "design-renders", "label": "Product Renders", "cluster": "design", "date": "2026-11-15",
+      "overview": "Product renders are realistic images made from the CAD model. Lighting, materials and camera angle do most of the work.",
+      "points": [
+        "Assign realistic materials and finishes",
+        "Use soft lighting and a simple background",
+        "Include one hero shot and a few detail views"
+      ]
+    },
 
-    { "id": "horm-testosterone",  "label": "Testosterone",                     "cluster": "horm", "date": "2026-08-17", "size": 5 },
-    { "id": "horm-cortisol",      "label": "Cortisol",                         "cluster": "horm", "date": "2026-08-27" },
-    { "id": "horm-thyroid",       "label": "Thyroid (T3 / T4)",                "cluster": "horm", "date": "2026-09-09" },
-    { "id": "horm-insulin",       "label": "Insulin Sensitivity",              "cluster": "horm", "date": "2026-09-18" },
-    { "id": "horm-estradiol",     "label": "Estradiol",                        "cluster": "horm", "date": "2026-10-02" },
-    { "id": "horm-shbg",          "label": "SHBG",                             "cluster": "horm", "date": "2026-10-21" },
-    { "id": "horm-hpg",           "label": "HPG Axis",                         "cluster": "horm", "date": "2026-11-03" },
-    { "id": "horm-gh",            "label": "Growth Hormone",                   "cluster": "horm", "date": "2026-11-14" },
+    {
+      "id": "horm-testosterone", "label": "Testosterone", "cluster": "horm", "date": "2026-08-17", "size": 5,
+      "overview": "Testosterone is the main androgen. It supports muscle and bone, red blood cell production, libido, mood and energy. Levels follow a daily rhythm and are shaped by sleep, body composition, training and overall health.",
+      "points": [
+        "Made mostly in the testes, under the control of signals from the brain",
+        "Highest in the morning, lower in the evening",
+        "Most of it travels bound to proteins; only a small share is free",
+        "Sleep loss, excess body fat and chronic stress are all linked to lower levels"
+      ],
+      "cards": [
+        { "q": "Where is most testosterone made, and what tells the body to make it?", "a": "In the testes, in response to LH released by the pituitary gland." },
+        { "q": "Why is the time of day important when testing testosterone?", "a": "Levels peak in the morning, so tests are usually drawn early for a consistent comparison." },
+        { "q": "Name three lifestyle factors linked to lower testosterone.", "a": "Poor sleep, excess body fat and chronic stress." }
+      ]
+    },
+    {
+      "id": "horm-cortisol", "label": "Cortisol", "cluster": "horm", "date": "2026-08-27",
+      "overview": "Cortisol is the body's main stress hormone. It follows a strong daily rhythm, helps mobilize energy and regulates inflammation. Short spikes are normal; staying high for long periods is the concern.",
+      "points": [
+        "Peaks shortly after waking and falls through the day",
+        "Released through the HPA axis (hypothalamus, pituitary, adrenals)",
+        "Raised by stress, sleep loss and very hard training"
+      ],
+      "cards": [
+        { "q": "When is cortisol normally at its highest?", "a": "In the first hour or so after waking." },
+        { "q": "Which axis controls cortisol release?", "a": "The HPA axis: hypothalamus, pituitary and adrenal glands." }
+      ]
+    },
+    {
+      "id": "horm-thyroid", "label": "Thyroid (T3 / T4)", "cluster": "horm", "date": "2026-09-09",
+      "overview": "Thyroid hormones set the pace of metabolism in almost every tissue. The gland makes mostly T4, which the body converts into the more active T3.",
+      "points": [
+        "T4 is the storage form; T3 is the active form",
+        "TSH from the pituitary tells the thyroid how much to make",
+        "Iodine and selenium are needed to make and convert thyroid hormone"
+      ],
+      "cards": [
+        { "q": "What is the difference between T4 and T3?", "a": "T4 is the main hormone released by the thyroid; T3 is the more active form made from it." },
+        { "q": "Which hormone signals the thyroid to produce more?", "a": "TSH, from the pituitary gland." }
+      ]
+    },
+    {
+      "id": "horm-insulin", "label": "Insulin Sensitivity", "cluster": "horm", "date": "2026-09-18",
+      "overview": "Insulin moves glucose out of the blood and into cells. Insulin sensitivity describes how well cells respond: the better the response, the less insulin is needed for the same job.",
+      "points": [
+        "Released by the pancreas after meals",
+        "Muscle is the largest sink for glucose",
+        "Activity, muscle mass and sleep improve sensitivity; excess body fat lowers it"
+      ],
+      "cards": [
+        { "q": "What does insulin sensitivity mean?", "a": "How strongly cells respond to insulin. Higher sensitivity means less insulin is needed to clear glucose." },
+        { "q": "Which tissue takes up most glucose after a meal?", "a": "Skeletal muscle." }
+      ]
+    },
+    {
+      "id": "horm-estradiol", "label": "Estradiol", "cluster": "horm", "date": "2026-10-02",
+      "overview": "Estradiol is the main estrogen. Men need it too, in smaller amounts, for bone health, libido and brain function. It is made from testosterone by the enzyme aromatase.",
+      "points": [
+        "Produced from testosterone by aromatase",
+        "Aromatase is found in fat tissue, among other places",
+        "Both too little and too much cause problems"
+      ],
+      "cards": [
+        { "q": "How is estradiol made in men?", "a": "The enzyme aromatase converts some testosterone into estradiol." },
+        { "q": "Why is estradiol not simply a 'bad' hormone for men?", "a": "It supports bone density, libido and brain function, so very low levels are also a problem." }
+      ]
+    },
+    {
+      "id": "horm-shbg", "label": "SHBG", "cluster": "horm", "date": "2026-10-21",
+      "overview": "Sex hormone-binding globulin is a protein made by the liver that carries testosterone and estradiol in the blood. Hormone bound to SHBG is not available to tissues.",
+      "points": [
+        "Higher SHBG means less free testosterone for the same total",
+        "Tends to rise with age",
+        "Tends to be lower with insulin resistance and higher body fat"
+      ],
+      "cards": [
+        { "q": "What does SHBG do?", "a": "It binds sex hormones in the blood, which keeps that portion from acting on tissues." },
+        { "q": "Why can two people with the same total testosterone feel different?", "a": "Their SHBG levels can differ, so the free, active share is not the same." }
+      ]
+    },
+    {
+      "id": "horm-hpg", "label": "HPG Axis", "cluster": "horm", "date": "2026-11-03",
+      "overview": "The HPG axis is the control loop for sex hormones. The hypothalamus releases GnRH, the pituitary answers with LH and FSH, and the gonads respond by making testosterone and sperm.",
+      "points": [
+        "GnRH is released in pulses",
+        "LH drives testosterone production; FSH supports sperm production",
+        "Testosterone and estradiol feed back to turn the signal down"
+      ],
+      "cards": [
+        { "q": "What are the three levels of the HPG axis?", "a": "Hypothalamus (GnRH), pituitary (LH and FSH), and gonads (testosterone)." },
+        { "q": "What is negative feedback in the HPG axis?", "a": "Rising testosterone and estradiol signal the brain to release less GnRH and LH." }
+      ]
+    },
+    {
+      "id": "horm-gh", "label": "Growth Hormone", "cluster": "horm", "date": "2026-11-14",
+      "overview": "Growth hormone supports tissue repair, growth and fat metabolism. Most of it is released in pulses, with the largest pulse early in the night during deep sleep.",
+      "points": [
+        "Released by the pituitary in pulses",
+        "The biggest pulse comes with the first block of deep sleep",
+        "Many of its effects work through IGF-1, made in the liver"
+      ],
+      "cards": [
+        { "q": "When is the largest daily pulse of growth hormone released?", "a": "Early in the night, during deep (slow-wave) sleep." },
+        { "q": "Which hormone carries out many of growth hormone's effects?", "a": "IGF-1, produced mainly by the liver." }
+      ]
+    },
 
-    { "id": "sleep-circadian",    "label": "Circadian Rhythm",                 "cluster": "sleep", "date": "2026-08-22" },
-    { "id": "sleep-deep",         "label": "Deep Sleep",                       "cluster": "sleep", "date": "2026-09-05" },
-    { "id": "sleep-rem",          "label": "REM Sleep",                        "cluster": "sleep", "date": "2026-09-19" },
-    { "id": "sleep-consistency",  "label": "Consistent Wake Time",             "cluster": "sleep", "date": "2026-10-03" },
-    { "id": "sleep-bedroom",      "label": "Cool, Dark Bedroom",               "cluster": "sleep", "date": "2026-10-17" },
-    { "id": "sleep-caffeine",     "label": "Caffeine Cutoff",                  "cluster": "sleep", "date": "2026-10-31" },
-    { "id": "sleep-tracking",     "label": "Sleep Tracking",                   "cluster": "sleep", "date": "2026-11-08" },
+    {
+      "id": "sleep-circadian", "label": "Circadian Rhythm", "cluster": "sleep", "date": "2026-08-22",
+      "overview": "The circadian rhythm is the body's roughly 24-hour clock. It times sleep, body temperature and hormone release, and it is set mainly by light reaching the eyes.",
+      "points": [
+        "The master clock sits in the brain's suprachiasmatic nucleus",
+        "Morning light moves the clock earlier; evening light moves it later",
+        "Melatonin rises in the evening as darkness falls"
+      ],
+      "cards": [
+        { "q": "What is the strongest signal for setting the body clock?", "a": "Light, especially bright light in the morning." },
+        { "q": "What does melatonin signal?", "a": "That it is biological night; it rises in the evening in dim light." }
+      ]
+    },
+    {
+      "id": "sleep-deep", "label": "Deep Sleep", "cluster": "sleep", "date": "2026-09-05",
+      "overview": "Deep sleep, also called slow-wave sleep, is the most physically restorative stage. Growth hormone is released, tissue is repaired, and the brain clears waste products.",
+      "points": [
+        "Concentrated in the first half of the night",
+        "Hardest stage to wake from",
+        "Reduced by alcohol, late caffeine and a warm bedroom"
+      ],
+      "cards": [
+        { "q": "In which part of the night does most deep sleep occur?", "a": "The first half." },
+        { "q": "Why does deep sleep matter for recovery?", "a": "It is when the largest growth hormone pulse occurs and when much physical repair takes place." }
+      ]
+    },
+    {
+      "id": "sleep-rem", "label": "REM Sleep", "cluster": "sleep", "date": "2026-09-19",
+      "overview": "REM sleep is the stage with vivid dreaming. The brain is active while the body is still, and it is tied to memory, learning and emotional processing.",
+      "points": [
+        "Concentrated in the second half of the night",
+        "Cutting sleep short removes mostly REM",
+        "Alcohol suppresses REM early in the night"
+      ],
+      "cards": [
+        { "q": "Which stage do you lose most of by waking two hours early?", "a": "REM sleep, because it is concentrated late in the night." },
+        { "q": "What is REM sleep linked to?", "a": "Memory consolidation, learning and emotional regulation." }
+      ]
+    },
+    {
+      "id": "sleep-consistency", "label": "Consistent Wake Time", "cluster": "sleep", "date": "2026-10-03",
+      "overview": "Waking at the same time every day anchors the body clock. A stable wake time tends to make it easier to fall asleep at night and to wake without an alarm.",
+      "points": [
+        "Wake time is easier to control than bedtime",
+        "Large weekend shifts act like jet lag",
+        "Light soon after waking strengthens the anchor"
+      ],
+      "cards": [
+        { "q": "Why anchor wake time instead of bedtime?", "a": "You can control when you get up, and a steady wake time pulls the rest of the rhythm into line." },
+        { "q": "What is social jet lag?", "a": "The mismatch created by sleeping and waking much later on weekends than on weekdays." }
+      ]
+    },
+    {
+      "id": "sleep-bedroom", "label": "Cool, Dark Bedroom", "cluster": "sleep", "date": "2026-10-17",
+      "overview": "The body cools slightly to fall asleep and stay asleep, and light at night signals daytime to the brain. A cool, dark, quiet room removes two common obstacles.",
+      "points": [
+        "Core body temperature drops at sleep onset",
+        "Even dim light at night can reduce melatonin",
+        "Blackout curtains or an eye mask are simple fixes"
+      ],
+      "cards": [
+        { "q": "Why does a cooler room help sleep?", "a": "Falling asleep goes with a drop in core body temperature, and a cool room makes that easier." },
+        { "q": "How does light at night interfere with sleep?", "a": "It suppresses melatonin and signals the body clock that it is still daytime." }
+      ]
+    },
+    {
+      "id": "sleep-caffeine", "label": "Caffeine Cutoff", "cluster": "sleep", "date": "2026-10-31",
+      "overview": "Caffeine blocks adenosine, the chemical that builds up sleep pressure during the day. It lingers for hours, so an afternoon coffee can still be active at bedtime.",
+      "points": [
+        "Half-life is roughly 5 to 6 hours, with wide variation between people",
+        "Can reduce deep sleep even if you fall asleep fine",
+        "A common rule is to stop 8 or more hours before bed"
+      ],
+      "cards": [
+        { "q": "How does caffeine keep you awake?", "a": "It blocks adenosine receptors, masking the build-up of sleep pressure." },
+        { "q": "Why can late caffeine hurt sleep even if you fall asleep normally?", "a": "It can still be in your system and reduce the amount of deep sleep." }
+      ]
+    },
+    {
+      "id": "sleep-tracking", "label": "Sleep Tracking", "cluster": "sleep", "date": "2026-11-08",
+      "overview": "Sleep tracking turns nights into numbers you can compare. Wearables are good at total sleep time and timing, and much rougher at telling sleep stages apart.",
+      "points": [
+        "Useful measures: duration, consistency, time to fall asleep",
+        "Stage estimates from wearables are approximate",
+        "Look at trends over weeks, not single nights"
+      ],
+      "cards": [
+        { "q": "What are consumer sleep trackers most reliable for?", "a": "Total sleep time and sleep timing, more than exact sleep stages." },
+        { "q": "Why look at weekly trends?", "a": "Single nights vary a lot; trends show whether a change is real." }
+      ]
+    },
 
-    { "id": "train-resistance",   "label": "Resistance Training",              "cluster": "train", "date": "2026-08-23" },
-    { "id": "train-overload",     "label": "Progressive Overload",             "cluster": "train", "date": "2026-09-06" },
-    { "id": "train-compound",     "label": "Compound Lifts",                   "cluster": "train", "date": "2026-09-16" },
-    { "id": "train-zone2",        "label": "Zone 2 Cardio",                    "cluster": "train", "date": "2026-09-29" },
-    { "id": "train-recovery",     "label": "Recovery & Deloads",               "cluster": "train", "date": "2026-10-10" },
-    { "id": "train-hiit",         "label": "Sprints & HIIT",                   "cluster": "train", "date": "2026-10-24" },
-    { "id": "train-overtraining", "label": "Overtraining",                     "cluster": "train", "date": "2026-11-07" },
+    {
+      "id": "train-resistance", "label": "Resistance Training", "cluster": "train", "date": "2026-08-23",
+      "overview": "Resistance training means working muscles against a load. It builds muscle and strength, supports bone density, and improves how the body handles glucose.",
+      "points": [
+        "Mechanical tension is the main driver of muscle growth",
+        "Most major muscle groups respond well to training about twice a week",
+        "Sets taken close to failure count the most"
+      ],
+      "cards": [
+        { "q": "What is the main stimulus for muscle growth?", "a": "Mechanical tension from challenging sets taken close to failure." },
+        { "q": "Name two benefits of resistance training beyond muscle size.", "a": "Better bone density and better insulin sensitivity." }
+      ]
+    },
+    {
+      "id": "train-overload", "label": "Progressive Overload", "cluster": "train", "date": "2026-09-06",
+      "overview": "Progressive overload means asking a little more of the body over time. Without it, the body has no reason to keep adapting.",
+      "points": [
+        "Add weight, reps or sets gradually",
+        "Track workouts so progress is visible",
+        "Progress in small steps to avoid stalling or injury"
+      ],
+      "cards": [
+        { "q": "What is progressive overload?", "a": "Gradually increasing the demand on the body, through load, reps or volume, so it keeps adapting." },
+        { "q": "Why keep a training log?", "a": "So you know what you did last time and can do slightly more." }
+      ]
+    },
+    {
+      "id": "train-compound", "label": "Compound Lifts", "cluster": "train", "date": "2026-09-16",
+      "overview": "Compound lifts move more than one joint and work several muscle groups at once. They let you train a lot of muscle with heavy loads in little time.",
+      "points": [
+        "Examples: squat, deadlift, bench press, overhead press, row, pull-up",
+        "Technique comes before load",
+        "Isolation exercises fill the gaps afterwards"
+      ],
+      "cards": [
+        { "q": "What makes a lift a compound lift?", "a": "It involves movement at more than one joint and uses several muscle groups." },
+        { "q": "Give three examples of compound lifts.", "a": "Squat, deadlift and bench press." }
+      ]
+    },
+    {
+      "id": "train-zone2", "label": "Zone 2 Cardio", "cluster": "train", "date": "2026-09-29",
+      "overview": "Zone 2 is steady, easy aerobic work at a pace where you can still hold a conversation. It builds the aerobic base and the capacity of mitochondria to burn fat.",
+      "points": [
+        "Roughly 60 to 70 percent of maximum heart rate",
+        "You should be able to speak in full sentences",
+        "Low stress, so it is easy to recover from"
+      ],
+      "cards": [
+        { "q": "How can you tell you are in zone 2 without a heart rate monitor?", "a": "You can hold a conversation in full sentences, but would rather not sing." },
+        { "q": "What does zone 2 training develop?", "a": "Aerobic base and mitochondrial capacity." }
+      ]
+    },
+    {
+      "id": "train-recovery", "label": "Recovery & Deloads", "cluster": "train", "date": "2026-10-10",
+      "overview": "Training provides the signal; adaptation happens during recovery. Sleep, food and planned easier weeks are part of the program, not time off from it.",
+      "points": [
+        "Sleep is the most important recovery tool",
+        "A deload week cuts volume or intensity on purpose",
+        "Soreness alone is a poor guide to recovery"
+      ],
+      "cards": [
+        { "q": "What is a deload?", "a": "A planned period of lighter training that lets fatigue clear so progress can continue." },
+        { "q": "When does the body actually get stronger?", "a": "During recovery after training, not during the session itself." }
+      ]
+    },
+    {
+      "id": "train-hiit", "label": "Sprints & HIIT", "cluster": "train", "date": "2026-10-24",
+      "overview": "High-intensity intervals alternate short, very hard efforts with rest. They raise top-end fitness quickly, at the price of more fatigue than easy cardio.",
+      "points": [
+        "Efforts of seconds to a few minutes, near maximum",
+        "Improves VO2 max in little total time",
+        "One or two sessions a week is plenty for most people"
+      ],
+      "cards": [
+        { "q": "What is the trade-off of high-intensity intervals?", "a": "Large fitness benefits in little time, but more fatigue and a higher recovery cost." },
+        { "q": "What does HIIT improve most?", "a": "VO2 max, the upper limit of aerobic fitness." }
+      ]
+    },
+    {
+      "id": "train-overtraining", "label": "Overtraining", "cluster": "train", "date": "2026-11-07",
+      "overview": "Overtraining is what happens when training load stays ahead of recovery for too long. Performance drops, and sleep, mood and hormones can all suffer.",
+      "points": [
+        "Warning signs: falling performance, poor sleep, low mood, constant fatigue",
+        "Resting heart rate may rise",
+        "The fix is rest and more food, not more effort"
+      ],
+      "cards": [
+        { "q": "Name three warning signs of overtraining.", "a": "Declining performance, disturbed sleep and persistent fatigue or low mood." },
+        { "q": "What is the remedy for overtraining?", "a": "Reducing training load and prioritizing sleep and nutrition until performance returns." }
+      ]
+    },
 
-    { "id": "nutr-protein",       "label": "Protein Intake",                   "cluster": "nutr", "date": "2026-08-29" },
-    { "id": "nutr-fats",          "label": "Dietary Fats & Cholesterol",       "cluster": "nutr", "date": "2026-09-07" },
-    { "id": "nutr-minerals",      "label": "Zinc & Magnesium",                 "cluster": "nutr", "date": "2026-09-20" },
-    { "id": "nutr-vitd",          "label": "Vitamin D",                        "cluster": "nutr", "date": "2026-10-04" },
-    { "id": "nutr-energy",        "label": "Energy Balance",                   "cluster": "nutr", "date": "2026-10-18" },
-    { "id": "nutr-alcohol",       "label": "Alcohol",                          "cluster": "nutr", "date": "2026-11-01" },
-    { "id": "nutr-whole",         "label": "Whole Foods",                      "cluster": "nutr", "date": "2026-11-17" },
+    {
+      "id": "nutr-protein", "label": "Protein Intake", "cluster": "nutr", "date": "2026-08-29",
+      "overview": "Protein supplies the amino acids used to build and repair muscle. Enough protein, spread through the day, supports training and helps you stay full.",
+      "points": [
+        "A common target for people who train is about 1.6 to 2.2 g per kg of body weight per day",
+        "Spread across meals instead of one large serving",
+        "Complete sources contain all essential amino acids"
+      ],
+      "cards": [
+        { "q": "Why does protein matter for someone who lifts?", "a": "It provides the amino acids needed to repair and build muscle after training." },
+        { "q": "What is a complete protein?", "a": "A source that contains all nine essential amino acids." }
+      ]
+    },
+    {
+      "id": "nutr-fats", "label": "Dietary Fats & Cholesterol", "cluster": "nutr", "date": "2026-09-07",
+      "overview": "Dietary fat is a building material as well as a fuel. Cholesterol is the starting molecule for steroid hormones, and very low-fat diets have been linked to lower testosterone.",
+      "points": [
+        "Steroid hormones, including testosterone, are made from cholesterol",
+        "Types: saturated, monounsaturated, polyunsaturated",
+        "Omega-3 fats come mainly from oily fish"
+      ],
+      "cards": [
+        { "q": "What molecule are steroid hormones made from?", "a": "Cholesterol." },
+        { "q": "Name the three main types of dietary fat.", "a": "Saturated, monounsaturated and polyunsaturated." }
+      ]
+    },
+    {
+      "id": "nutr-minerals", "label": "Zinc & Magnesium", "cluster": "nutr", "date": "2026-09-20",
+      "overview": "Zinc and magnesium are minerals involved in hundreds of enzyme reactions, including hormone production, muscle function and sleep. Low intake is fairly common.",
+      "points": [
+        "Zinc sources: red meat, shellfish, seeds",
+        "Magnesium sources: leafy greens, nuts, legumes",
+        "Correcting a deficiency helps; taking more than you need does not add benefit"
+      ],
+      "cards": [
+        { "q": "Name two food sources of zinc.", "a": "Red meat and shellfish (oysters are especially rich)." },
+        { "q": "Does extra zinc raise testosterone in someone who is not deficient?", "a": "Generally not. The benefit seen in studies comes from correcting a deficiency." }
+      ]
+    },
+    {
+      "id": "nutr-vitd", "label": "Vitamin D", "cluster": "nutr", "date": "2026-10-04",
+      "overview": "Vitamin D acts more like a hormone than a vitamin. The skin makes it from sunlight, and it supports bone, immune function and muscle. Low levels are common, especially in winter.",
+      "points": [
+        "Made in the skin from UVB sunlight",
+        "Food sources are limited: oily fish, egg yolks, fortified foods",
+        "Status is checked with a blood test"
+      ],
+      "cards": [
+        { "q": "How does the body get most of its vitamin D?", "a": "The skin makes it when exposed to UVB light from the sun." },
+        { "q": "Why are low vitamin D levels common in winter?", "a": "There is less sun and less skin exposed, so the skin makes much less." }
+      ]
+    },
+    {
+      "id": "nutr-energy", "label": "Energy Balance", "cluster": "nutr", "date": "2026-10-18",
+      "overview": "Energy balance is calories in against calories out. Body weight follows it over time, and hormones respond to it: long, steep deficits tend to lower testosterone and thyroid output.",
+      "points": [
+        "A surplus adds weight; a deficit removes it",
+        "Large, long deficits lower testosterone and thyroid hormones",
+        "Slower changes are easier on hormones and on muscle"
+      ],
+      "cards": [
+        { "q": "What happens to hormones in a long, aggressive calorie deficit?", "a": "Testosterone and thyroid output tend to fall, and cortisol tends to rise." },
+        { "q": "What is energy balance?", "a": "The difference between calories eaten and calories burned." }
+      ]
+    },
+    {
+      "id": "nutr-alcohol", "label": "Alcohol", "cluster": "nutr", "date": "2026-11-01",
+      "overview": "Alcohol is a sedative, not a sleep aid. It fragments sleep and suppresses REM, and heavy drinking is linked to lower testosterone.",
+      "points": [
+        "Reduces REM sleep and causes more waking later in the night",
+        "Heavy intake is associated with lower testosterone",
+        "The effect scales with the amount and how close to bedtime"
+      ],
+      "cards": [
+        { "q": "How does alcohol affect sleep?", "a": "It may help you fall asleep, but it fragments sleep and suppresses REM." },
+        { "q": "What two things decide how much alcohol disrupts sleep?", "a": "How much you drink and how close to bedtime." }
+      ]
+    },
+    {
+      "id": "nutr-whole", "label": "Whole Foods", "cluster": "nutr", "date": "2026-11-17",
+      "overview": "Whole foods are foods close to how they were grown or raised. They bring more protein, fiber and micronutrients per calorie than ultra-processed foods, and are harder to overeat.",
+      "points": [
+        "Built around meat, fish, eggs, fruit, vegetables, legumes and whole grains",
+        "Ultra-processed foods are easy to overeat",
+        "Less packaging can also mean less contact with plastics"
+      ],
+      "cards": [
+        { "q": "Why are whole foods harder to overeat?", "a": "They are more filling per calorie because of their protein, fiber and water content." },
+        { "q": "What is an ultra-processed food?", "a": "An industrial product made mostly from refined ingredients and additives, with little intact whole food." }
+      ]
+    },
 
-    { "id": "env-disruptors",     "label": "Endocrine Disruptors",             "cluster": "env", "date": "2026-08-30", "size": 4 },
-    { "id": "env-plastics",       "label": "Microplastics",                    "cluster": "env", "date": "2026-09-13" },
-    { "id": "env-bpa",            "label": "BPA & Phthalates",                 "cluster": "env", "date": "2026-09-23" },
-    { "id": "env-light",          "label": "Blue Light at Night",              "cluster": "env", "date": "2026-10-08" },
-    { "id": "env-sunlight",       "label": "Morning Sunlight",                 "cluster": "env", "date": "2026-10-11" },
-    { "id": "env-water",          "label": "Water Filtration",                 "cluster": "env", "date": "2026-10-26" },
-    { "id": "env-pfas",           "label": "PFAS",                             "cluster": "env", "date": "2026-11-09" },
-    { "id": "env-fragrance",      "label": "Fragrance & Personal Care",        "cluster": "env", "date": "2026-11-18" },
+    {
+      "id": "env-disruptors", "label": "Endocrine Disruptors", "cluster": "env", "date": "2026-08-30", "size": 4,
+      "overview": "Endocrine disruptors are chemicals that interfere with the body's hormone system. They can mimic a hormone, block it, or change how it is made and broken down.",
+      "points": [
+        "Examples: BPA, phthalates, PFAS, some pesticides",
+        "Exposure comes through food, water, air and skin",
+        "Effects can occur at low doses and depend on timing",
+        "Reducing exposure is easier than removing it"
+      ],
+      "cards": [
+        { "q": "What is an endocrine disruptor?", "a": "A chemical that interferes with hormones by mimicking them, blocking them or altering how they are made or cleared." },
+        { "q": "Name three groups of endocrine-disrupting chemicals.", "a": "Bisphenols such as BPA, phthalates and PFAS." },
+        { "q": "What are the main routes of exposure?", "a": "Food and drink, air and dust, and contact with the skin." }
+      ]
+    },
+    {
+      "id": "env-plastics", "label": "Microplastics", "cluster": "env", "date": "2026-09-13",
+      "overview": "Microplastics are plastic particles smaller than 5 mm. They are now found in water, food, air and human tissue. Their health effects are an active area of research.",
+      "points": [
+        "Shed from packaging, synthetic clothing and tires",
+        "Heating food in plastic increases shedding",
+        "Can carry additives such as phthalates"
+      ],
+      "cards": [
+        { "q": "What are microplastics?", "a": "Plastic particles smaller than 5 millimeters." },
+        { "q": "What everyday habit increases the release of plastic particles into food?", "a": "Heating food or drinks in plastic containers." }
+      ]
+    },
+    {
+      "id": "env-bpa", "label": "BPA & Phthalates", "cluster": "env", "date": "2026-09-23",
+      "overview": "BPA and phthalates are two of the best-studied plastic chemicals. BPA can act like estrogen, and some phthalates are linked to lower testosterone in human studies.",
+      "points": [
+        "BPA: can linings, some hard plastics, thermal receipts",
+        "Phthalates: soft plastics, fragrance, some personal care products",
+        "'BPA-free' products may use similar bisphenols"
+      ],
+      "cards": [
+        { "q": "Where is BPA commonly found?", "a": "In the linings of food cans, some hard plastics and thermal paper receipts." },
+        { "q": "What hormone effect are phthalates linked to?", "a": "Lower testosterone, in a number of human studies." },
+        { "q": "Why is 'BPA-free' not a guarantee?", "a": "Replacement bisphenols such as BPS can behave in similar ways." }
+      ]
+    },
+    {
+      "id": "env-light", "label": "Blue Light at Night", "cluster": "env", "date": "2026-10-08",
+      "overview": "Light in the evening, especially the blue part of the spectrum, tells the body clock that it is still daytime. That delays melatonin and pushes sleep later.",
+      "points": [
+        "Blue wavelengths suppress melatonin the most",
+        "Brightness and duration matter as much as color",
+        "Dimmer, warmer light in the last hours before bed helps"
+      ],
+      "cards": [
+        { "q": "How does evening light affect sleep?", "a": "It suppresses melatonin and shifts the body clock later, making it harder to fall asleep." },
+        { "q": "Which matters besides the color of evening light?", "a": "How bright it is and how long you are exposed to it." }
+      ]
+    },
+    {
+      "id": "env-sunlight", "label": "Morning Sunlight", "cluster": "env", "date": "2026-10-11",
+      "overview": "Bright light soon after waking is the strongest daily signal for the body clock. It helps set the timing of cortisol in the morning and melatonin at night.",
+      "points": [
+        "Outdoor light is far brighter than indoor light, even on cloudy days",
+        "Early light moves the clock earlier",
+        "Pairs well with a consistent wake time"
+      ],
+      "cards": [
+        { "q": "Why is outdoor light better than indoor light in the morning?", "a": "It is many times brighter, so it is a much stronger signal to the body clock." },
+        { "q": "What does morning light do to the timing of sleep?", "a": "It shifts the clock earlier, which makes it easier to fall asleep at night." }
+      ]
+    },
+    {
+      "id": "env-water", "label": "Water Filtration", "cluster": "env", "date": "2026-10-26",
+      "overview": "Tap water can carry small amounts of contaminants, including PFAS and microplastics. Filters differ a lot in what they remove.",
+      "points": [
+        "Activated carbon reduces chlorine and some organic chemicals",
+        "Reverse osmosis removes the widest range, including most PFAS",
+        "Check a filter's certification for the specific contaminant"
+      ],
+      "cards": [
+        { "q": "Which filter type removes the widest range of contaminants?", "a": "Reverse osmosis." },
+        { "q": "How do you know what a filter actually removes?", "a": "Check its independent certification for the specific contaminant." }
+      ]
+    },
+    {
+      "id": "env-pfas", "label": "PFAS", "cluster": "env", "date": "2026-11-09",
+      "overview": "PFAS are a large family of 'forever chemicals' used for nonstick, stain-resistant and water-repellent products. They break down very slowly and build up in the body.",
+      "points": [
+        "Found in some nonstick cookware, food packaging and water supplies",
+        "Stay in the body for years",
+        "Linked in studies to thyroid and other hormone effects"
+      ],
+      "cards": [
+        { "q": "Why are PFAS called forever chemicals?", "a": "They break down extremely slowly in the environment and stay in the body for years." },
+        { "q": "Name two common sources of PFAS exposure.", "a": "Contaminated drinking water and some nonstick or grease-resistant products." }
+      ]
+    },
+    {
+      "id": "env-fragrance", "label": "Fragrance & Personal Care", "cluster": "env", "date": "2026-11-18",
+      "overview": "Fragrance in personal care products can contain phthalates, which help a scent last. Because the ingredient list often just says 'fragrance', they are easy to miss.",
+      "points": [
+        "'Fragrance' or 'parfum' can cover many undisclosed ingredients",
+        "Skin products are absorbed directly",
+        "Fragrance-free options avoid the question"
+      ],
+      "cards": [
+        { "q": "Why are phthalates used in fragranced products?", "a": "They help the scent last longer." },
+        { "q": "What is the simplest way to avoid phthalates from fragrance?", "a": "Choose fragrance-free products." }
+      ]
+    },
 
-    { "id": "labs-total-t",       "label": "Total Testosterone",               "cluster": "labs", "date": "2026-09-08" },
-    { "id": "labs-free-t",        "label": "Free Testosterone",                "cluster": "labs", "date": "2026-09-26" },
-    { "id": "labs-lipids",        "label": "Lipid Panel",                      "cluster": "labs", "date": "2026-10-09" },
-    { "id": "labs-a1c",           "label": "HbA1c & Fasting Glucose",          "cluster": "labs", "date": "2026-10-20" },
-    { "id": "labs-tsh",           "label": "TSH",                              "cluster": "labs", "date": "2026-10-29" },
-    { "id": "labs-vitd",          "label": "25-OH Vitamin D",                  "cluster": "labs", "date": "2026-11-05" },
-    { "id": "labs-ranges",        "label": "Reference vs. Optimal Ranges",     "cluster": "labs", "date": "2026-11-12" },
+    {
+      "id": "labs-total-t", "label": "Total Testosterone", "cluster": "labs", "date": "2026-09-08",
+      "overview": "Total testosterone measures all testosterone in the blood, bound and free. It is the standard first test, and because levels vary through the day it is drawn in the morning.",
+      "points": [
+        "Usually drawn in the morning, often fasted",
+        "Reported in ng/dL or nmol/L",
+        "One low result should be confirmed with a repeat test"
+      ],
+      "cards": [
+        { "q": "What does total testosterone measure?", "a": "All testosterone in the blood: the part bound to proteins plus the free part." },
+        { "q": "Why repeat a low testosterone result?", "a": "Levels vary from day to day, so a diagnosis should not rest on a single test." }
+      ]
+    },
+    {
+      "id": "labs-free-t", "label": "Free Testosterone", "cluster": "labs", "date": "2026-09-26",
+      "overview": "Free testosterone is the small share not bound to proteins, and so the part that can act on tissues. It is often calculated from total testosterone, SHBG and albumin.",
+      "points": [
+        "Roughly 1 to 3 percent of total testosterone",
+        "Useful when SHBG is unusually high or low",
+        "Calculated values are usually more reliable than direct assays"
+      ],
+      "cards": [
+        { "q": "What is free testosterone?", "a": "The unbound fraction of testosterone that is available to tissues." },
+        { "q": "When is free testosterone most informative?", "a": "When SHBG is unusually high or low, so total testosterone is misleading." }
+      ]
+    },
+    {
+      "id": "labs-lipids", "label": "Lipid Panel", "cluster": "labs", "date": "2026-10-09",
+      "overview": "A lipid panel measures the fats carried in the blood. It is a core marker of cardiovascular risk and worth tracking alongside hormones.",
+      "points": [
+        "Total cholesterol, LDL, HDL and triglycerides",
+        "ApoB counts the number of atherogenic particles",
+        "Triglycerides are sensitive to diet and are usually measured fasted"
+      ],
+      "cards": [
+        { "q": "What four values does a standard lipid panel report?", "a": "Total cholesterol, LDL cholesterol, HDL cholesterol and triglycerides." },
+        { "q": "What does ApoB add to a lipid panel?", "a": "A count of the particles that can drive plaque build-up, which predicts risk better than LDL cholesterol alone." }
+      ]
+    },
+    {
+      "id": "labs-a1c", "label": "HbA1c & Fasting Glucose", "cluster": "labs", "date": "2026-10-20",
+      "overview": "HbA1c reflects average blood glucose over about three months, while fasting glucose is a snapshot of one morning. Together they screen for insulin resistance and diabetes.",
+      "points": [
+        "HbA1c is the share of hemoglobin with glucose attached",
+        "Fasting glucose is measured after at least 8 hours without food",
+        "Fasting insulin can reveal resistance before glucose rises"
+      ],
+      "cards": [
+        { "q": "What time span does HbA1c reflect?", "a": "Roughly the past three months." },
+        { "q": "Why measure fasting insulin as well as glucose?", "a": "Insulin often rises years before glucose does, so it can show resistance earlier." }
+      ]
+    },
+    {
+      "id": "labs-tsh", "label": "TSH", "cluster": "labs", "date": "2026-10-29",
+      "overview": "TSH is the pituitary's signal to the thyroid, and the standard first screen of thyroid function. It moves in the opposite direction to thyroid hormone levels.",
+      "points": [
+        "High TSH suggests an underactive thyroid",
+        "Low TSH suggests an overactive thyroid",
+        "Free T4 and free T3 are added when TSH is abnormal"
+      ],
+      "cards": [
+        { "q": "What does a high TSH usually indicate?", "a": "An underactive thyroid: the pituitary is asking for more hormone." },
+        { "q": "Which tests follow an abnormal TSH?", "a": "Free T4 and free T3." }
+      ]
+    },
+    {
+      "id": "labs-vitd", "label": "25-OH Vitamin D", "cluster": "labs", "date": "2026-11-05",
+      "overview": "25-hydroxyvitamin D is the blood test for vitamin D status. It reflects both sun exposure and intake over the previous weeks.",
+      "points": [
+        "Written as 25(OH)D",
+        "Reported in ng/mL or nmol/L",
+        "Tends to be lowest at the end of winter"
+      ],
+      "cards": [
+        { "q": "Which blood test measures vitamin D status?", "a": "25-hydroxyvitamin D, written 25(OH)D." },
+        { "q": "When in the year is vitamin D usually lowest?", "a": "At the end of winter." }
+      ]
+    },
+    {
+      "id": "labs-ranges", "label": "Reference vs. Optimal Ranges", "cluster": "labs", "date": "2026-11-12",
+      "overview": "A reference range covers the middle 95 percent of the people a lab has tested. It describes what is common, which is not always the same as what is best for health.",
+      "points": [
+        "Reference ranges differ between labs",
+        "The tested population includes people who are not healthy",
+        "Trends in your own results over time matter more than one number"
+      ],
+      "cards": [
+        { "q": "What does a lab reference range represent?", "a": "The range containing about 95 percent of results from the lab's reference population." },
+        { "q": "Why is 'within range' not the same as optimal?", "a": "The range describes what is common in the tested population, not what is associated with the best health." }
+      ]
+    },
 
-    { "id": "pilot-recruit",      "label": "Recruitment",                      "cluster": "pilot", "date": "2026-09-27" },
-    { "id": "pilot-onboarding",   "label": "Onboarding Survey",                "cluster": "pilot", "date": "2026-10-06" },
-    { "id": "pilot-baseline",     "label": "Baseline Labs",                    "cluster": "pilot", "date": "2026-10-14" },
-    { "id": "pilot-checkins",     "label": "Weekly Check-ins",                 "cluster": "pilot", "date": "2026-10-25" },
-    { "id": "pilot-protocol",     "label": "8-Week Protocol",                  "cluster": "pilot", "date": "2026-11-02" },
-    { "id": "pilot-retention",    "label": "Retention",                        "cluster": "pilot", "date": "2026-11-10" },
-    { "id": "pilot-feedback",     "label": "Feedback Interviews",              "cluster": "pilot", "date": "2026-11-16" }
+    {
+      "id": "pilot-recruit", "label": "Recruitment", "cluster": "pilot", "date": "2026-09-27",
+      "overview": "Recruitment is finding the first people to try Baseline. A small, engaged group that fits the target user is worth more than a large, passive one.",
+      "points": [
+        "Define who the pilot is for before inviting anyone",
+        "Start with people who already care about the problem",
+        "Be clear about the time commitment"
+      ]
+    },
+    {
+      "id": "pilot-onboarding", "label": "Onboarding Survey", "cluster": "pilot", "date": "2026-10-06",
+      "overview": "The onboarding survey captures each participant's starting point: habits, goals and context. It is the comparison point for everything measured later.",
+      "points": [
+        "Ask only what will be used",
+        "Cover sleep, training, nutrition and environment",
+        "Explain how the data is stored and who can see it"
+      ],
+      "cards": [
+        { "q": "Why collect a survey before the pilot starts?", "a": "It records the starting point, so later changes can be measured against it." }
+      ]
+    },
+    {
+      "id": "pilot-baseline", "label": "Baseline Labs", "cluster": "pilot", "date": "2026-10-14",
+      "overview": "Baseline labs are the blood tests taken before the protocol starts. Without them there is nothing to compare the end results to.",
+      "points": [
+        "Same lab, same time of day, same fasting state as the follow-up",
+        "Morning draw for hormone tests",
+        "Record anything unusual about the day of the test"
+      ],
+      "cards": [
+        { "q": "Why must baseline and follow-up labs be drawn under the same conditions?", "a": "Time of day, fasting and lab differences can change results as much as the protocol does." },
+        { "q": "What is the purpose of baseline labs?", "a": "To record each participant's starting values so changes can be measured." }
+      ]
+    },
+    {
+      "id": "pilot-checkins", "label": "Weekly Check-ins", "cluster": "pilot", "date": "2026-10-25",
+      "overview": "Weekly check-ins collect how participants are doing while the protocol runs: sleep, training, energy and what they found hard.",
+      "points": [
+        "Keep them short enough to finish in two minutes",
+        "Same questions every week so answers can be compared",
+        "A missed check-in is itself a signal"
+      ],
+      "cards": [
+        { "q": "Why ask the same questions every week?", "a": "So answers can be compared over time and trends are visible." }
+      ]
+    },
+    {
+      "id": "pilot-protocol", "label": "8-Week Protocol", "cluster": "pilot", "date": "2026-11-02",
+      "overview": "The 8-week protocol is the plan participants follow: a small set of sleep, training, nutrition and environment habits, introduced in stages.",
+      "points": [
+        "A few habits done consistently beat many done briefly",
+        "Introduce changes in stages, not all at once",
+        "Eight weeks is long enough for habits to settle and for labs to move"
+      ],
+      "cards": [
+        { "q": "Why introduce habits in stages?", "a": "Changing everything at once is hard to stick to and hides which change made the difference." },
+        { "q": "Why does the protocol run for eight weeks?", "a": "It gives habits time to settle and is long enough for blood markers to change." }
+      ]
+    },
+    {
+      "id": "pilot-retention", "label": "Retention", "cluster": "pilot", "date": "2026-11-10",
+      "overview": "Retention is the share of participants still active as the weeks go by. It shows whether the protocol fits into real life.",
+      "points": [
+        "Track weekly check-in completion",
+        "Find out why people stop, not only how many",
+        "Early drop-off usually points at onboarding"
+      ]
+    },
+    {
+      "id": "pilot-feedback", "label": "Feedback Interviews", "cluster": "pilot", "date": "2026-11-16",
+      "overview": "Feedback interviews are conversations with participants at the end of the pilot. They explain the numbers: what worked, what did not, and why.",
+      "points": [
+        "Ask open questions and listen more than you talk",
+        "Ask about specific moments, not general opinions",
+        "Look for patterns across interviews"
+      ]
+    }
   ],
 
   "links": [
@@ -292,7 +1533,6 @@
     ["py-numpy", "calc-integrals"],
     ["py-plots", "phys-projectile"],
     ["py-control", "design-tempo"],
-
     ["sleep-deep", "horm-testosterone"],
     ["sleep-deep", "horm-gh"],
     ["sleep-circadian", "horm-cortisol"],
@@ -324,7 +1564,6 @@
     ["pilot-protocol", "train-resistance"],
     ["pilot-protocol", "sleep-consistency"],
     ["pilot-onboarding", "env-disruptors"],
-
     ["py-pandas", "pilot-checkins"],
     ["py-files", "pilot-onboarding"],
     ["py-plots", "labs-ranges"],

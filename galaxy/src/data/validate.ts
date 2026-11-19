@@ -1,5 +1,5 @@
 import { JsonSyntaxError, parseJson } from './json';
-import type { Cluster, GalaxyData, GalaxyNode, Link, ValidationIssue } from './types';
+import type { Card, Cluster, GalaxyData, GalaxyNode, Link, ValidationIssue } from './types';
 
 export type ValidationResult =
   | { ok: true; data: GalaxyData }
@@ -8,7 +8,8 @@ export type ValidationResult =
 type LineOf = (path: string) => number | undefined;
 
 const CLUSTER_FIELDS = ['id', 'name', 'color', 'group'];
-const NODE_FIELDS = ['id', 'label', 'cluster', 'date', 'size'];
+const NODE_FIELDS = ['id', 'label', 'cluster', 'date', 'size', 'overview', 'points', 'cards'];
+const CARD_FIELDS = ['q', 'a'];
 const ROOT_FIELDS = ['clusters', 'nodes', 'links'];
 const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -127,8 +128,17 @@ export function validateGalaxy(value: unknown, lineOf: LineOf = () => undefined)
           size = raw.size;
         }
       }
+      const overview = optionalText(raw, 'overview', path, report);
+      const points = optionalTextList(raw.points, `${path}.points`, report);
+      const cards = optionalCards(raw.cards, `${path}.cards`, report);
+
       if (id !== undefined && label !== undefined && cluster !== undefined && date !== undefined) {
-        nodes.push(size === undefined ? { id, label, cluster, date } : { id, label, cluster, date, size });
+        const node: GalaxyNode = { id, label, cluster, date };
+        if (size !== undefined) node.size = size;
+        if (overview !== undefined) node.overview = overview;
+        if (points !== undefined && points.length > 0) node.points = points;
+        if (cards !== undefined && cards.length > 0) node.cards = cards;
+        nodes.push(node);
       }
     });
   }
@@ -208,6 +218,65 @@ function requireString(
     return undefined;
   }
   return raw;
+}
+
+type Report = (path: string, message: string) => void;
+
+/** An optional text field: fine when missing, but when present it has to be non-empty text. */
+function optionalText(record: Record<string, unknown>, field: string, path: string, report: Report): string | undefined {
+  const raw = record[field];
+  if (raw === undefined) return undefined;
+  if (typeof raw !== 'string') {
+    report(`${path}.${field}`, `Must be text in double quotes, but it is ${typeName(raw)}.`);
+    return undefined;
+  }
+  if (raw.trim() === '') {
+    report(`${path}.${field}`, `Can't be empty. Write something, or remove "${field}".`);
+    return undefined;
+  }
+  return raw;
+}
+
+/** Optional list of short texts (a node's key points). An empty list is allowed. */
+function optionalTextList(raw: unknown, path: string, report: Report): string[] | undefined {
+  if (raw === undefined) return undefined;
+  if (!Array.isArray(raw)) {
+    report(path, `Must be a list of texts, like ["first point", "second point"], but it is ${typeName(raw)}.`);
+    return undefined;
+  }
+  const items: string[] = [];
+  raw.forEach((item: unknown, index: number) => {
+    if (typeof item !== 'string') {
+      report(`${path}[${index}]`, `Must be text in double quotes, but it is ${typeName(item)}.`);
+    } else if (item.trim() === '') {
+      report(`${path}[${index}]`, "Can't be empty. Write the point, or remove it.");
+    } else {
+      items.push(item);
+    }
+  });
+  return items;
+}
+
+/** Optional list of flashcards, each exactly { "q": "...", "a": "..." }. An empty list is allowed. */
+function optionalCards(raw: unknown, path: string, report: Report): Card[] | undefined {
+  if (raw === undefined) return undefined;
+  if (!Array.isArray(raw)) {
+    report(path, `Must be a list of cards, like [{ "q": "question", "a": "answer" }], but it is ${typeName(raw)}.`);
+    return undefined;
+  }
+  const cards: Card[] = [];
+  raw.forEach((item: unknown, index: number) => {
+    const cardPath = `${path}[${index}]`;
+    if (!isRecord(item)) {
+      report(cardPath, `Must be a card like { "q": "question", "a": "answer" }, but it is ${typeName(item)}.`);
+      return;
+    }
+    checkUnknownFields(item, CARD_FIELDS, cardPath, report);
+    const q = requireString(item, 'q', cardPath, report);
+    const a = requireString(item, 'a', cardPath, report);
+    if (q !== undefined && a !== undefined) cards.push({ q, a });
+  });
+  return cards;
 }
 
 function checkUnknownFields(
